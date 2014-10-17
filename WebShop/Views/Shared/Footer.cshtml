@@ -1,0 +1,86 @@
+﻿@using WebShop.Models
+
+<div class="FooterWrapper">
+    <div class="paddingBig floatLeft">
+        <div class="FooterTop">
+            <div class="FooterColumn">
+                <span class="Title">@Translation.Get("PARTNERI")</span>
+                <br style="clear: left;" />
+                <ul>
+                   
+                       
+                   
+              @*  <li>@Translation.Get("Privredna banka")</li>
+                <li>@Translation.Get("Hypo Alpe-Adria Bank")</li>
+                <li>@Translation.Get("Volksbank")</li>*@
+                </ul>
+            </div>
+            <div class="FooterColumn">
+                <span class="Title">@Translation.Get("OVRHE.HR")</span>
+                <br style="clear: left;" />
+                <ul>
+
+                    <li>
+                        @Html.ActionLink(Translation.Get("O nama"), "Index", "AboutUs")
+                    </li>
+                    <li>
+                        @Html.ActionLink(Translation.Get("Usluge"), "Index", "Services")
+                    </li>
+                    <li>
+                        @Html.ActionLink(Translation.Get("Partneri"), "Index", "Partner")
+                    </li>
+                    <li>
+                        @Html.ActionLink(Translation.Get("Info"), "Index", "Info")
+                    </li>
+                    <li>
+                        @Html.ActionLink(Translation.Get("Kontakt"), "Index", "Contact")
+                    </li>
+                  
+                    @*    <li>@Translation.Get("Preko 40 000 posjeta mjesečno")</li>
+                <li>@Translation.Get("5000 registriranih korisnika")</li>
+                <li>@Translation.Get("10 000 nekretnina")</li>
+                <li>@Translation.Get("33 000 vozila")</li>*@
+                </ul>
+            </div>
+            <div class="FooterColumn">
+                <span class="Title">@Translation.Get("KORISNI LINKOVI")</span>
+                <br style="clear: left;" />
+                <ul>
+                    <li> <a href="http://hgkreg.hgk.hr/Ovrha/faces/index.jsp" >@Translation.Get("Očevidnik nekretnina i pokretnina - Hrvatska gospodarska komora") </a></li>
+                    <li><a href="http://www.zakon.hr/z/74/Ovr%C5%A1ni-zakon" >@Translation.Get("Ovršni zakon") </a></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            
+            <div class="FooterColumn">
+                <span class="Title">@Translation.Get("OPĆE INFORMACIJE")
+                </span>
+                <br style="clear: left;" />
+                <ul>
+                    <li>@Html.ActionLink(Translation.Get("Marketing"), "Index", "Marketing")</li>
+                    <li>@Translation.Get("Uvjeti korištenja")</li>
+                    @* <li>@Translation.Get("Sitemap")</li>*@
+                </ul>
+            </div>
+            <div class="FooterColumn">
+                <span class="Title">@Translation.Get("PRATITE NAS NA")
+                </span>
+                <br style="clear: left;" />
+                <ul>
+                    <li><a href="http://www.facebook.com/pages/Ovrhehr/281489275284997">@Translation.Get("Facebook")</a></li>
+                    <li>@Translation.Get("Google +")</li>
+                    <li>@Translation.Get("LinkedIn")</li>
+                </ul>
+            </div>
+            <br style="clear: left;" />
+        </div>
+
+    </div>
+
+
+</div>
+    <div class="FooterBottom floatLeft">
+        <span class="fontSmall AllRightsreserved">@Translation.Get("© 2012 Unamente d.o.o. sva prava pridržana.") </span>
+
+    </div>

@@ -1,0 +1,43 @@
+﻿@*http://www.wbotelhos.com/raty/*@
+@using WebShop.Models
+@model Stars
+
+<div id="star"></div>
+
+@using (Html.BeginForm("Grade", "Subject", new { pid = Model.Product.Id }, FormMethod.Post, new { id = "GradeForm" }))
+{
+    <input type="hidden" id="GradeInput" name="score" />
+}
+
+<script type="text/javascript"> 
+    var starGrade = @Model.Grade;
+
+    $('#star').raty({ 
+        score: starGrade,
+        path:"/Resources/Images/Stars",
+        cancel:@(Model.UserGrade == 0 ? "false" : "true"),
+        cancelHint: "@string.Concat(Translation.Get("Vaša ocjena je"), " ", Model.UserGrade)",
+        cancelPlace:"right",
+        hints:["","","","",""],
+        click: function (score, evt) {
+            $('#star').raty('set', { score: starGrade });
+            $("#GradeInput").attr("value",score);
+            AjaxSubmitForm(
+                $("#GradeForm"),
+                function(data){
+                    var d = "<div>" + data + "</div>";
+                    if ($(d).find("div[id='LoginDiv']").length) {
+                        $('#Login').html(data);
+                    }
+                    else {
+                        starGrade = data;
+                        var star = $('#star');
+                        star.raty('set', { score: data });
+                        star.raty('set', { cancelHint: "@string.Concat(Translation.Get("Vaša ocjena je"), " ")" + score });
+                        star.raty('set', { cancel: score?true:false });
+                    }
+                }
+            );
+        }
+    });
+</script>

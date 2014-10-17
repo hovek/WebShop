@@ -1,0 +1,27 @@
+﻿@using WebShop.Models
+@{
+    ViewBag.Title = "CustomPage";
+
+}
+<div class="LeftColumnControl">
+    <div class="ControlBoxWrapper roundedCornersSmall">
+        <div class="ControlBoxRightHeader">
+            <span class="ControlBoxHeaderText" style="color: #fff; margin-left: 15px;">@Translation.Get("INFORMIRAJ SE")</span>
+        </div>
+    </div>
+    <div class="ArrowDownFirst">
+    </div>
+    <div class="paddingBig">
+        <ul class="SquareList">
+            @foreach (Syrilium.Modules.BusinessObjects.Page page in WebShop.Infrastructure.CommonHelpers.GetCurrentPage())
+            {
+                if (!string.IsNullOrEmpty(page.Name))
+                {
+                <li><b>
+                    @Html.ActionLink(page.Name, "Index", ViewContext.RouteData.Values["Controller"].ToString(), new { page = page.Name }, null)
+                </b></li>
+                }
+            }
+        </ul>
+    </div>
+</div>

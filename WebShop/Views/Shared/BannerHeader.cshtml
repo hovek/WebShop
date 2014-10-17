@@ -1,0 +1,38 @@
+﻿@using Syrilium.Modules.BusinessObjects
+@using WebShop.BusinessObjectsInterface;
+@model WebShop.Models.Banner
+
+@{
+    Model.Request = Request;
+}
+
+ @MvcHtmlString.Create(Model.BannerLedearBoard)
+
+
+@*                  <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+                            width="728" height="90" id="Object1" align="middle">
+                            <param name="allowScriptAccess" value="sameDomain" />
+                            <param name="allowFullScreen" value="false" />
+                            <param name="wmode" value="transparent" />
+                            <param name="movie" value="http://nekretnine-hrvatska.com.hr/banners/pbz-nekretnine-2011-04-12_10.swf" />
+                            <param name="quality" value="high" />
+                            <param name="bgcolor" value="#ffffff" />
+                            <embed wmode="transparent" src="http://nekretnine-hrvatska.com.hr/banners/pbz-nekretnine-2011-04-12_10.swf"
+                                quality="high" bgcolor="#ffffff" width="728" height="90" name="izdvojeno" align="middle"
+                                allowscriptaccess="sameDomain" allowfullscreen="false" type="application/x-shockwave-flash"
+                                pluginspage="http://www.macromedia.com/go/getflashplayer" />
+                        </object>*@ @*                        @Html.Raw("<li>")
+                        <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+                            width="728" height="90" id="Object2" align="middle">
+                            <param name="allowScriptAccess" value="sameDomain" />
+                            <param name="allowFullScreen" value="false" />
+                            <param name="wmode" value="transparent" />
+                            <param name="movie" value="http://nekretnine-hrvatska.com.hr/banners/b_1_nh-banner-hr.swf" />
+                            <param name="quality" value="high" />
+                            <param name="bgcolor" value="#ffffff" />
+                            <embed wmode="transparent" src="http://nekretnine-hrvatska.com.hr/banners/b_1_nh-banner-hr.swf"
+                                quality="high" bgcolor="#ffffff" width="728" height="90" name="izdvojeno" align="middle"
+                                allowscriptaccess="sameDomain" allowfullscreen="false" type="application/x-shockwave-flash"
+                                pluginspage="http://www.macromedia.com/go/getflashplayer" />
+                        </object>
+                        @Html.Raw("</li>") *@

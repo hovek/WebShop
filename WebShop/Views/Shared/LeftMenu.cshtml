@@ -1,0 +1,60 @@
+﻿@model WebShop.Models.LeftMenu
+@using WebShop.Models
+@using Syrilium.Modules.BusinessObjects.Item
+@using WebShop.BusinessObjectsInterface.Item
+@{
+    ViewBag.Title = "LeftMenu";
+    int index = -1;
+    int selectedIndex = 0;
+}
+<div class="LeftColumnControl">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get, new { enctype = "multipart/form-data", id = "LeftMenuForm" }))
+    {
+        <div id="accordion">
+            @foreach (IItem itemD in LeftMenu.GetMenuCached())
+            {
+                index++;
+                if (itemD.Id == @Model.DepartmentId)
+                {
+                    selectedIndex = index;
+                }
+                <div class="header roundedCornersSmall">
+                    <div class="AccordianControl">
+                        <div class="AccordianHeaderText">
+                            <a class="Department" onclick="SendgroupId(@itemD.Id)" >
+@*                                <span class="AccordionIcon floatLeft" style="background:transparent url(@itemD.Attributes[AttributeKeyEnum.DepartmentIcon].RawValue) no-repeat 5px 5px;"></span>*@
+                                @itemD.Attributes[AttributeKeyEnum.Name].GetRawValue()</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="AccordionChildWrapper ">
+                    @foreach (IItem itemG in itemD)
+                    {
+                        <div class="AccordionChild">
+                            <a href="@Url.Action("Index", "Home", new { gid = @itemG.Id })">@itemG.Attributes[AttributeKeyEnum.Name].GetRawValue()</a>
+                        </div>
+                    }
+                </div>
+            }
+            <input type="hidden" name="gid" id="groupId" />
+        </div>
+    }
+</div>
+<script type="text/javascript">
+    function SendgroupId(id) {
+        $("#groupId").attr('value', id);
+        $("#LeftMenuForm").submit();
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $("#accordion").accordion({ header: '.header', autoHeight: false, animated: false });
+            @Html.Raw(string.Concat(@"$(""#accordion"").accordion(""option"", ""active"",", selectedIndex, ")"))
+    });
+
+    jQuery().ready(function () {
+        jQuery('#accordion').accordion({
+            active: false
+        });
+    });
+</script>

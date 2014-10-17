@@ -1,0 +1,28 @@
+﻿@using WebShop.Models
+@model PriceBox
+
+<div>
+    <div class="ControlBoxMainHeader roundedCornersSmall" >
+        <div class="PriceIcon">
+            <span class="ControlBoxHeaderText">@Translation.Get("CIJENA")</span></div>
+    </div>
+    <div class="dividerBig">
+    </div>
+    <div class="PriceBoxWrapper roundedCornersSmall">
+        <div class="ControlBoxContent">
+            <div class="paddingBig">
+@*                <div class="PriceBoxHeader">
+                    <span class="TitleSmall"><b>@Translation.Get("Nekretnina")</b></span>
+                </div>*@
+                <div class="PriceBoxContent">
+                <div class="PriceWrapper">
+                    <span><b>@Translation.Get("Cijena"): </b></span><span class="Red"><b>@Html.Raw(Model.Price)</b></span>
+                    </div>
+                    <div class="dividerSmall"></div>
+                     <span><b>@Translation.Get("Napomena"):</b></span>
+                    <span class="fontSmall">@Translation.Get("Cijena nisu fiksne te se mogu dogoditi manja odstupanja")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

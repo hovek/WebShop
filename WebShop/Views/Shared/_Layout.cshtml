@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+
+    <title>@ViewBag.Title</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Web portal ovrhe.hr jedinstveno je mjesto spajanja ponude i potražnje predmeta ovršnih i stečajnih postupaka, javnih licitacija i predmeta zapljene." />
+    <meta name="keywords" content="oglasnik, mali oglasi, ovrhe, ovrha, oglasnici, oglasi" />
+
+
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <script src="../../Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="../../Scripts/jquery-ui-1.8.23.custom.min.js" type="text/javascript"></script>
+    <script src="../../Scripts/CustomScripts/CustomScripts.js" type="text/javascript"></script>
+    <link href="@Url.Content("~/Content/jqueryUITheme-start/jquery-ui-1.8.22.custom.css")" rel="stylesheet" type="text/css" />
+    <script src="../../Scripts/Accordion/Accorodion.js" type="text/javascript"></script>
+    <script src="../../Scripts/Accordion/widget.js" type="text/javascript"></script>
+    <script src="../../Scripts/Slider/jquery_flexslider.js" type="text/javascript"></script>
+    <script src="../../Scripts/Colorbox/Colorbox.js" type="text/javascript"></script>
+    <script src="../../Scripts/ExpandableContent/ExpandableContent.js" type="text/javascript"></script>
+    <script src="../../Scripts/Simplemodal_overlay/jquery_simplemodal_1_4_3.js" type="text/javascript"></script>
+    <script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/tags/markermanager/1.0/src/markermanager_packed.js"
+        type="text/javascript"></script>
+    <script src="../../Scripts/CountDown/CountDown.js" type="text/javascript"></script>
+    <script src="../../Scripts/Stars/jquery.raty.min.js" type="text/javascript"></script>
+    <script src="../../Scripts/ImageDropDown/ImageDropDown.js" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+    <script src="../../Scripts/JQueryToolTip/JQueryToolTip.js" type="text/javascript"></script>
+
+    @*    Google analytics*@
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-35711510-1']);
+        _gaq.push(['_setDomainName', 'ovrhe.hr']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        @WebShop.Infrastructure.CommonHelpers.GetAjaxSubmitFormJSF()
+    </script>
+
+</head>
+<body style="@Html.Partial("Background", ViewData["BackgroundModel"] ?? new WebShop.Models.Background())" >
+
+
+    <div class="PageHolder">
+        <div class="Page">
+            <div class="Header">
+                @Html.Partial("Header", ViewData["HeaderModel"] ?? new WebShop.Models.Header())
+            </div>
+            <div class="HeaderBottom">
+                @Html.Partial("MenuMain", new WebShop.Models.MenuMain())
+            </div>
+            <div class="Main">
+                <div class="LeftColumn">
+                    @RenderSection("LeftMenu", false)
+                    @RenderSection("MyAccountMenu", false)
+                    @RenderSection("CustomPage", false)
+                    @Html.Partial("BannerLeftSide", ViewData["BannerModel"] ?? new WebShop.Models.Banner())
+                    @*  @Html.Partial("SliderLogo", ViewData["SliderLogo"] ?? new WebShop.Models.SliderLogo())*@
+                    @Html.Partial("FacebookLikeBox")
+                </div>
+                <div class="MiddleColumn">
+
+                    @RenderBody()
+
+                </div>
+                <div class="RightColumn">
+                    @Html.Partial("TabNavigation", ViewData["RepeaterItemsModel"] ?? new WebShop.Models.RepeaterItems())
+                    @Html.Partial("BannerRightSide", ViewData["BannerModel"] ?? new WebShop.Models.Banner())
+                    @Html.Partial("NewsletterBox", new WebShop.Models.Newsletter())
+                   @Html.Partial("InfoBox")
+                    @Html.Partial("NewsBox")
+                </div>
+            </div>
+        </div>
+        <div class="Footer">
+            @* <div class="FooterCloud">
+        </div>*@
+            @Html.Partial("Footer")
+        </div>
+    </div>
+
+</body>
+</html>

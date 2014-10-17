@@ -1,0 +1,38 @@
+﻿@using Syrilium.Modules.BusinessObjects
+@using WebShop.BusinessObjects
+@using WebShop.BusinessObjectsInterface
+@using M = WebShop.Models
+@{
+    ViewBag.Title = M.Translation.Get("Usluge");
+    Syrilium.Modules.BusinessObjects.Page defaultPage;
+}
+@if (ViewBag.CustomPage)
+{
+    <div>
+        @section CustomPage
+        {
+            @Html.Partial("CustomPage")
+        }
+    </div>
+}
+
+@helper Pages(Syrilium.Modules.BusinessObjects.Page defaultPage)
+{
+    if (ViewData["Content"] != null)
+    {
+    <h2>
+        @MvcHtmlString.Create(ViewData["TitlePage"].ToString())
+    </h2>
+    @MvcHtmlString.Create(ViewData["Content"].ToString())
+    }
+    else if (defaultPage != null)
+    {
+    <h2>
+        @MvcHtmlString.Create(defaultPage.Name)
+    </h2>
+    <p>
+        @MvcHtmlString.Create(defaultPage.Content)
+    </p>
+    }
+}
+@Pages(defaultPage = M.Pages.GetStaticPage(4))

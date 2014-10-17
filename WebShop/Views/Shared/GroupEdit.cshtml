@@ -1,0 +1,20 @@
+﻿@using S = Syrilium.Modules.BusinessObjects;
+@using WebShop.Models;
+@using WebShop.BusinessObjectsInterface.Item;
+@using WebShop.Infrastructure;
+@model GroupEdit
+
+<div style="width: 400px;">
+    @using (Html.BeginForm("EditGroup", "Admin", FormMethod.Post, new { id = "EditGroupForm", @class = "floatLeft" }))
+    {
+        <input name="SelectedGroupId" type="hidden" value="@Model.SelectedGroupId" />	
+        <input id="GroupIdEdit" name="groupId" type="hidden" value="@Model.GroupId" />	
+        <input name="action" type="hidden" value="@Model.Action" />	        
+   
+        <label class="label">@Translation.Get("Naziv")</label>
+        <input class="Textbox" name="name" type="text" value="@Model.Name" />
+        <br style="clear:left;" />
+        <label class="label">@Translation.Get("Prikaži")</label>
+        @Html.ItemCheckBox(htmlAttributes: new {name="show"}, isChecked: Model.Show)
+    }
+</div>

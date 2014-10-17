@@ -1,0 +1,114 @@
+﻿@using WebShop.Models
+@model AttributeTemplateEdit
+
+<input type="hidden" id="AttributeTemplateEditFormToSubmit" />
+
+@if (Model.EditType == AttributeTemplateEditType.None)
+{
+    <div onclick="javascript: $('#GroupEditRadio').attr('checked',true); OnGroupEditRadioSelect();">
+        <input type="radio" id="GroupEditRadio" name="EditType" onchange="javascript: OnGroupEditRadioSelect();" />
+        @Translation.Get("Grupu")
+    </div>
+    <div onclick="javascript: $('#AttributeEditRadio').attr('checked',true); OnAttributeEditRadioSelect();">
+        <input type="radio" id="AttributeEditRadio" name="EditType" onchange="javascript: OnAttributeEditRadioSelect();" />
+        @Translation.Get("Atribut")
+    </div>
+}
+
+@if (Model.EditType != AttributeTemplateEditType.Attribute)
+{
+    string groupName = "";
+    if (Model.EditType == AttributeTemplateEditType.None)
+    {
+       <script type="text/javascript">
+            $('#GroupEditDiv').hide();
+       </script>
+    }
+    else
+    {
+        groupName = Model.TemplateGroup.GetDisplayValue(Model.LanguageId);
+    }
+    <div id="GroupEditDiv">
+        @using (Html.BeginForm("EditAttributeTemplateGroup", "Admin", FormMethod.Post, new { id = "EditAttributeTemplateGroupForm" }))
+        {
+            <input name="GroupId" value="@Model.GroupId" type="hidden" />	
+            <input name="LanguageId" value="@Model.LanguageId" type="hidden" />	
+            <input name="TemplateId" value="@Model.TemplateId" type="hidden" />	            
+            <input name="TemplateElementId" value="@Model.TemplateElementId" type="hidden" />	            
+            <input name="Action" value="@(Model.EditType == AttributeTemplateEditType.None ? "add" : "edit")" type="hidden" />	            
+            <div>
+                 @Translation.Get("Ime grupe")
+                <input type="text" name="GroupName" value="@groupName"/>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.EditType != AttributeTemplateEditType.Group)
+{
+    if (Model.EditType == AttributeTemplateEditType.None)
+    {
+       <script type="text/javascript">
+           $('#AttributeEditDiv').hide();
+       </script>
+    }
+    <div id="AttributeEditDiv">
+        @using (Html.BeginForm("EditAttributeTemplateAttribute", "Admin", FormMethod.Post, new { id = "EditAttributeTemplateAttributeForm" }))
+        {
+            <input name="GroupId" value="@Model.GroupId" type="hidden" />	
+            <input name="LanguageId" value="@Model.LanguageId" type="hidden" />	
+            <input name="TemplateId" value="@Model.TemplateId" type="hidden" />	            
+            <input name="TemplateElementId" value="@Model.TemplateElementId" type="hidden" />	            
+            <input name="Action" value="@(Model.EditType == AttributeTemplateEditType.None ? "add" : "edit")" type="hidden" />	 
+            
+            <div>
+                @Translation.Get("Atribut")
+                @Html.DropDownList("AttributeDefinitionId", Model.GetAttributes(), new { onchange="javascript: OnAttributeChange($(this).val());" })       
+            </div>    
+        }
+        <div id="AttributeTemplateConstraintEditContainer">
+            @Html.Partial("AttributeTemplateConstraintEdit", Model.AttributeTemplateConstraintEdit)
+        </div>
+    </div>
+}    
+
+<script type="text/javascript">
+    SetFormToPost();
+
+    function SetFormToPost() {
+        var editType = '@Model.EditType.ToString()';
+
+        if (editType == "None") {
+            if ($('input[id=AttributeEditRadio]:checked').val()) {
+                editType = "Attribute";
+            }
+            else if ($('input[id=GroupEditRadio]:checked').val()) {
+                editType = "Group";
+            }
+        }
+
+        if (editType == "Attribute") {
+            $('#AttributeTemplateEditFormToSubmit').attr("value", "EditAttributeTemplateAttributeForm");
+        }
+        else if (editType == "Group") {
+            $('#AttributeTemplateEditFormToSubmit').attr("value", "EditAttributeTemplateGroupForm");
+        }
+    }
+
+    function OnGroupEditRadioSelect() {
+        SetFormToPost();
+        $('#AttributeEditDiv').hide(); $('#GroupEditDiv').show();
+    }
+
+    function OnAttributeEditRadioSelect() {
+        SetFormToPost();
+        $('#GroupEditDiv').hide(); $('#AttributeEditDiv').show();
+    }
+
+    function OnAttributeChange(id) {
+        $('#ConstraintAttributeDefinitionId').attr('value', id);
+        AjaxSubmitForm(
+            $('#AttributeTemplateConstraintEditForm'),
+            function (data) { $('#AttributeTemplateConstraintEditContainer').html(data); });
+    }
+</script>

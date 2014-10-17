@@ -1,0 +1,227 @@
+﻿@using WebShop.BusinessObjectsInterface.Item
+@using WebShop.Models
+@model GroupTreeView
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"<div id=""GroupTreeViewContainer"">")
+}
+
+@using (Html.BeginForm("DeleteGroup", "Admin", FormMethod.Post, new { id = "DeleteGroupForm" }))
+{
+    <input name="SelectedGroupId"  type="hidden" value="@Model.SelectedGroupId" />	
+    <input id="GroupIdDelete" name="groupId" type="hidden" />	
+}
+@using (Html.BeginForm("GetGroupEditView", "Admin", FormMethod.Post, new { id = "GetGroupEditForm" }))
+{
+    <input name="SelectedGroupId"   type="hidden" value="@Model.SelectedGroupId" />	
+    <input id="GetGroupEditGroupId" name="GroupId" type="hidden" />	
+    <input id="GetGroupEditAction" name="Action" type="hidden" />	
+}
+
+@using (Html.BeginForm("OrderGroup", "Admin", FormMethod.Post, new { id = "OrderGroupForm" }))
+{
+    <input id="OrderGroupData" name="orderData" type="hidden" />	
+}
+
+<style type=text/css>
+    input.SelectLightBlue {
+        background: transparent;
+        border: 1px solid transparent;
+        padding: 0 2px 0 1px;
+    }
+    .SelectLightBlue:hover {
+        background: #BEEBFF;
+        border: 1px solid #99DEFD;
+        padding: 0 2px 0 1px;
+        cursor: pointer;
+    }
+</style>
+
+<fieldset>
+    <legend>@Translation.Get("POPIS GRUPA I PODGRUPA")</legend>
+    <input type="button" value="@Translation.Get("Dodaj ogranak")" onclick="@Html.Raw(string.Concat("javascript:EditGroup('add');"))"/>
+    <div id="GroupTreeView">
+        <ul class="filetree">
+            @foreach (IItem itemD in Model.Groups)
+            {
+                <li id="@string.Concat("grp_", itemD.Id)" class="GroupTreeViewItem">
+                    @{string groupName = itemD.Attributes[AttributeKeyEnum.Name].GetRawValue();}
+
+                    <a href="#" class="GroupTreeViewDisabledlink@(itemD.Id == Model.SelectedGroupId?" SelectedGroup":"")">
+                        @Html.Raw(@groupName)
+                    </a>
+                    <a id="grpOpen_@itemD.Id" href="?id=@itemD.Id" style="display:none;"></a>
+                    @if (itemD.Id != Model.SelectedGroupId)
+                    {
+                        <input type="button" class="SelectLightBlue" value=">" onclick="javascript: window.location=$('#grpOpen_@itemD.Id').attr('href');"/>
+                    }
+                    @RenderGroups(itemD)
+                </li>
+            }
+        </ul>
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+    $("a.GroupTreeViewDisabledlink").click(function (event) {
+        event.preventDefault();
+    });
+
+    $(function () {
+        $("#GroupTreeView")
+            .bind("loaded.jstree", function (event, data) { jQuery.jstree._reference($("#GroupTreeView")).open_all(-1, false); })
+            .bind("move_node.jstree", function (e, data) { OnGroupTreeViewNodeMove(e,data); })
+            .jstree({
+                "core": {
+                    "animation": 100
+                },
+                "dnd": {
+                    "copy_modifier": false
+                },
+                "themes": {
+                    "icons": false
+                },
+                "crrm": {
+                    "move": {
+                        "check_move": function (m) { return OnGroupTreeViewCheckMove(m); },
+                    }
+                },
+                "contextmenu": {
+                    "items": {
+                        "create": null,
+                        "rename": null,
+                        "remove": null,
+                        "ccp": null,
+                        "open": {
+                            "label": "@(Translation.Get("Otvori"))",
+                            "action": function (obj) { OpenGroup(obj); },
+                        },
+                        "edit": {
+                            "label": "@(Translation.Get("Uredi"))",
+                            "action": function (obj) { EditGroup('edit', obj); }
+                        },
+                        "add": {
+                            "label": "@(Translation.Get("Dodaj"))",
+                            "action": function (obj) { EditGroup('add', obj); }
+                        },
+                        "delete": {
+                            "label": "@(Translation.Get("Obriši"))",
+                            "action": function (obj) { DeleteGroup(obj); },
+                        }
+                    }
+                },
+                "plugins": ["themes", "html_data", "crrm", "dnd", "ui", "contextmenu"]
+            });
+    });
+
+    function OnGroupTreeViewNodeMove(e, data) {
+        var orderData = (data.rslt.cr == -1 ? -1 : $(data.rslt.cr).attr('id').replace('grp_','')) + ";" + data.rslt.cp + ";";
+        data.rslt.o.each(function (i) {
+            orderData = orderData + $(this).attr('id').replace('grp_','') + ",";
+        });
+        $('#OrderGroupData').attr('value', orderData);
+        AjaxSubmitForm($('#OrderGroupForm'));
+    }
+
+    function OnGroupTreeViewCheckMove(m) {
+        return $(m.o).hasClass('GroupTreeViewItem');
+    }
+
+    function OpenGroup(obj){
+        var id = $(obj).attr('id').replace('grp_', '');
+        window.location=$('#grpOpen_' + id).attr('href');
+    }
+
+	function DeleteGroup(obj) {
+	    var id = $(obj).attr('id').replace('grp_', '');
+	    var a = $(obj).find('a').first();
+	    var name = a.text().trim();
+
+	    var btns = {};
+		btns['@Translation.Get("Da")'] = function () {
+		    $('#GroupIdDelete').attr('value', id);
+		    if (a.hasClass("SelectedGroup"))
+			{
+				$("#DeleteGroupForm").submit();
+			}
+			else
+			{
+		        AjaxSubmitForm($("#DeleteGroupForm"), function(data){$("#GroupTreeViewContainer").html(data);});
+			}
+			$(this).dialog("close");
+		};
+		btns['@Translation.Get("Ne")'] = function () {
+			$(this).dialog("close");
+		};
+	    $("#GroupDeleteDialog").html("@Translation.Get("Jeste li sigurni da želite obrisati") '" + name + "'?");
+		$("#GroupDeleteDialog").dialog({
+			autoOpen: true,
+			title: '@Translation.Get("Brisanje")',
+		    width: 'auto',
+		    modal: true,
+			buttons: btns
+		});
+	}
+
+	function EditGroup(action, obj) {		
+	    var id;
+	    if (obj) id = $(obj).attr('id').replace('grp_', '');
+	    else id = "";
+
+	    $('#GetGroupEditGroupId').attr('value', id);
+        $('#GetGroupEditAction').attr('value', action);
+        AjaxSubmitForm($("#GetGroupEditForm"), function(data){$("#GroupEditDialog").html(data);}, function () { OnGetGroupEdit(); });
+	}
+
+	function OnGetGroupEdit() {
+		var btns = {};
+		btns['@Translation.Get("Pošalji")'] = function () {
+		    AjaxSubmitForm($("#EditGroupForm"),function(data){$("#GroupTreeViewContainer").html(data);});
+			$(this).dialog("close");
+		};
+		btns['@Translation.Get("Odustani")'] = function () {
+			$(this).dialog("close");
+		};
+		$("#GroupEditDialog").dialog({
+			autoOpen: true,
+            width: 'auto',
+			title: '@Translation.Get("Uređivanje")',
+			modal: true,
+			buttons: btns
+		});
+	}
+</script>
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"</div>")
+}
+
+@helper RenderGroups(IList<IItem> groups)
+{
+    if (groups.Count == 0)
+    {
+        return;
+    }
+
+    <ul>
+        @foreach (IItem itemG in groups)
+        { 
+            <li id="@string.Concat("grp_", itemG.Id)" class="GroupTreeViewItem">
+                @{string groupName = itemG.Attributes[AttributeKeyEnum.Name].GetRawValue();}
+
+                <a href="#" class="GroupTreeViewDisabledlink@(itemG.Id == Model.SelectedGroupId?" SelectedGroup":"")">
+                    @Html.Raw(@groupName)
+                </a>
+
+                <a id="grpOpen_@itemG.Id" href="?id=@itemG.Id" style="display:none;"></a>
+                @if (itemG.Id != Model.SelectedGroupId)
+                {
+                    <input type="button" class="SelectLightBlue" value=">" onclick="javascript: window.location=$('#grpOpen_@itemG.Id').attr('href');"/>
+                }
+
+                @RenderGroups(itemG)
+            </li>
+        }
+    </ul>
+}

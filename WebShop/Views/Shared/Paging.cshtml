@@ -1,0 +1,37 @@
+﻿
+<div class="PagerWrapper">
+    <div class="Pager">
+        @{
+            WebShop.Infrastructure.Paging paging = Model.Paging;
+            if (paging.HasPreviousPage)
+            {  
+            @Html.ActionLink("<<", "Index", null, new { @class = "FirstPage", onclick = string.Concat("javascript: OnPageClick(", paging.FirstPageIndex, ");") }); ;
+            @Html.ActionLink("<", "Index", null, new { @class = "PreviousPage", onclick = string.Concat("javascript: OnPageClick(", paging.PreviousPageIndex, ");") });
+            }
+            foreach (int page in paging)
+            {
+                if (page == paging.CurrentPageIndex)
+                {
+                    @Html.ActionLink(page.ToString(), "Index", null, new { @class = "CurentPage", onclick = string.Concat("javascript: OnPageClick(", page, ");") });
+                }
+                else
+                {
+                    @Html.ActionLink(page.ToString(), "Index", null, new { @class = "Pages", onclick = string.Concat("javascript: OnPageClick(", page, ");") });
+                }
+            }
+
+            if (paging.HasNextPage)
+            {
+            @Html.ActionLink(">", "Index", null, new { @class = "NextPage", onclick = string.Concat("javascript: OnPageClick(", paging.NextPageIndex, ");") });
+            @Html.ActionLink(">>", "Index", null, new { @class = "LastPage", onclick = string.Concat("javascript: OnPageClick(", paging.LastPageIndex, ");") });
+            }
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(".Pager a").click(function (event) {
+        event.preventDefault();  
+});
+    </script>
+

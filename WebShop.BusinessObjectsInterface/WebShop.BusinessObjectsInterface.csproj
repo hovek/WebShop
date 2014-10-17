@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BBC7C96B-C373-4316-B6E3-21B0421A7DC0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WebShop.BusinessObjectsInterface</RootNamespace>
+    <AssemblyName>WebShop.BusinessObjectsInterface</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutUsTypeEnum.cs" />
+    <Compile Include="BannerLocationEnum.cs" />
+    <Compile Include="CacheNames.cs" />
+    <Compile Include="ConfigNames.cs" />
+    <Compile Include="FAQTypeEnum.cs" />
+    <Compile Include="IConfig.cs" />
+    <Compile Include="Item\AttributeDataSystemListReferenceEnum.cs" />
+    <Compile Include="Item\AttributeDataTypeEnum.cs" />
+    <Compile Include="Item\AttributeKeyEnum.cs" />
+    <Compile Include="Item\IArchiveItemChange.cs" />
+    <Compile Include="Item\IGroup.cs" />
+    <Compile Include="Item\SystemListForeignKeyFilter.cs" />
+    <Compile Include="Item\IAttributeDefinition.cs" />
+    <Compile Include="Item\IAttributeLocator.cs" />
+    <Compile Include="Item\IAttributeTemplate.cs" />
+    <Compile Include="Item\IItem.cs" />
+    <Compile Include="Item\IPredefinedList.cs" />
+    <Compile Include="Item\IReference.cs" />
+    <Compile Include="Item\ItemDataTypeEnum.cs" />
+    <Compile Include="Item\ItemDefinitionDataTypeEnum.cs" />
+    <Compile Include="Item\ItemDefinitionTypeEnum.cs" />
+    <Compile Include="Item\ItemTypeEnum.cs" />
+    <Compile Include="IValueConverter.cs" />
+    <Compile Include="PageLocationEnum.cs" />
+    <Compile Include="PermissionNames.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StoredProceduresNames.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Syrilium\Main\Interfaces\Syrilium.CommonInterface\Syrilium.CommonInterface.csproj">
+      <Project>{46972938-a69c-4272-9930-11a2096e7e07}</Project>
+      <Name>Syrilium.CommonInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\Syrilium.BusinessObjectsInterface.csproj">
+      <Project>{2B937200-3CB2-43D2-94A9-5463E7C8CEF5}</Project>
+      <Name>Syrilium.BusinessObjectsInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Syrilium\Main\Interfaces\Syrilium.DataAccessInterface\Syrilium.DataAccessInterface.csproj">
+      <Project>{E6C8B51C-09C7-43DF-A5B3-7525333A4960}</Project>
+      <Name>Syrilium.DataAccessInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Syrilium\Modules\Syrilium.BusinessObjects\Syrilium.BusinessObjects.csproj">
+      <Project>{0c4889ac-d0b3-4074-8894-8fb907be9298}</Project>
+      <Name>Syrilium.BusinessObjects</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

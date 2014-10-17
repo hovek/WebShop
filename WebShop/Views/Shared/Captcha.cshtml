@@ -1,0 +1,10 @@
+﻿@using WebShop.Models
+<div class="lc">
+    <b>
+        @Translation.Get("Koliko je?")*
+    </b>
+</div>
+<a @*href="@Url.Action("CaptchaImage","Contact")"*@ class="floatLeft">
+    <img alt="Captcha" src="@Url.Action("CaptchaImage", "Contact")" />
+</a>
+@Html.TextBox("captchaValue", "", new { @class = "TextboxSmall FormTextbox " })

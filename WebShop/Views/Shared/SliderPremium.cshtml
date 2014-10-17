@@ -1,0 +1,29 @@
+﻿@using WebShop.Models;
+@model SliderPremium
+
+<div class="CarouselPremium roundedCornersSmall floatLeft">
+    <div class="flexsliderPremium ">
+        <div class="flex-direction-nav-container">
+            &nbsp;
+        </div>
+        <div class="floatLeft" style="overflow: hidden; margin-right: 10px; width: 500px;">
+            <ul class="slides">
+                @foreach (SliderItem item in Model.GetSliderItems())
+                {
+                    <li><a href="@Url.Action("Index", "Subject", new { pid = item.Id })" >
+                        <span style="display:block; background:url('@item.ImageUrl') center center no-repeat; width:500px; height:300px;">
+                        </span>
+                    </a>
+                        <div class="flex-captionBottom">
+                            <span class="textContent">@item.Title</span>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(window).load(function () { $('.flexsliderPremium').flexslider({ pauseOnAction: 'true', controlNav: 'false', slideDirection: 'horizontal', animationDuration: 1000, slideshowSpeed: 5000, pauseOnHover: 'true' }); })
+</script>

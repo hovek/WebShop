@@ -1,0 +1,10 @@
+﻿@using M = WebShop.Models;
+@model WebShop.Models.Sitemap
+@{
+    ViewBag.Title = M.Translation.Get("Sitemap");
+}
+@foreach (M.Sitemap sitemap in Model.SitemapList)
+{
+    <a href="@sitemap.Url" >@sitemap.Url</a>
+    <br />
+}

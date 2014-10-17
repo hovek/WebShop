@@ -1,0 +1,36 @@
+﻿@model WebShop.Models.Newsletter
+<div style="  padding:10px;">
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+    <br style="clear: left;" />
+    }
+    <div>
+        @MvcHtmlString.Create(Model.Subject)
+    </div>
+       <br style="clear: left;" />
+    <div>
+        @MvcHtmlString.Create(Model.Content)
+    </div>
+    <br style="clear: left;" />
+    <hr />
+    <br style="clear: left;" />
+    @using (Html.BeginForm("Newsletter", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "NewsletterForm" }))
+    {
+        <div class="ControlWrapper floatLeft">
+            <span class="label">Id:</span>
+            @Html.TextBox("newslleterMailId", Model.NewsletterMailId, new { @class = "Textbox TextboxSmall ReadonlyTextbox", @readonly = true })
+        </div>
+            <br style="clear: left;" />
+        <div>
+            <span class="label">Newsletter liste:</span>
+            @Html.DropDownList("newsletterMailingListId", WebShop.Models.Newsletter.NewsletterMailingList(), "-- popis newsletter listi -- ", new { @class = "DropDownList DropDownListSmall floatLeft" })
+        </div> 
+        <input type="submit" name="button" value="SendMail" class="ButtonBlue floatRight" />
+    
+    }
+</div>

@@ -1,0 +1,303 @@
+﻿@using WebShop.Models
+@using WebShop.BusinessObjectsInterface.Item
+@using WebShop.Infrastructure
+@using Syrilium.Common
+@model WebShop.Models.SearchBox
+
+@{
+    Model.Init(Request);
+}
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"<div id=""SearchBoxViewContainer"">")
+}
+
+@ItemHelpers.GetDropDownListReferenceUpdateForms(Html.ViewContext.RequestContext, Model.AttributeTemplate)
+
+<div class="SearchWrapper paddingSmall">
+    <div class="SearchIcon">
+        <b>@Translation.Get("PRETRAGA")</b>
+    </div>
+
+    <div style="width: 100px; height: 100px; margin: auto auto; display: none;" id="SearchAjaxLoader">
+        <img alt="" src="../../Resources/Images/ajax-loader100.gif" />
+    </div>
+    <div>
+
+        <div id="SearchBox" class="SearchBoxContent">
+
+            @using (Html.BeginForm("Index", "Search", FormMethod.Get, new { /*enctype = "multipart/form-data",*/ id = "SearchForm" }))
+            {
+                <input type="hidden" name="did" value="@Model.DepartmentId" />
+                <input type="hidden" id="ActionInput" name="action" />
+                <input type="hidden" id="PageInput" name="page" />
+                <input type="hidden" id="SortInput" name="@Model.GetSortedAttributeName()" value="@Model.GetSortedDirection()" />
+
+                <div class="SearchContent">
+                    <div class="SearchContentControlWrapper">
+                        <div class="floatLeft" style="margin-right: 10px;">
+                            <span class="lc Label">
+                                @Translation.Get("Partner"):
+                            </span>
+                            <div class="floatLeft">
+                                @Html.ItemDropDown(ItemHelpers.GetAttributeDefinition(AttributeKeyEnum.Partner),
+                                    Model.GetPartnersDropDownItems(),
+                                    string.Concat("-- ", Translation.Get("Odaberite partnera"), " --"),
+                                    new { @class = "DropDownList SearchDropDownList" })
+                            </div>
+                        </div>
+                        <div class="floatLeft">
+                            <span class="lc Label">
+                                @Translation.Get("Samo oglasi sa slikom")
+                            </span>
+                            <div class="floatLeft" style="margin: 3px;">
+                                @Html.ItemCheckBox(ItemHelpers.GetAttributeDefinition(AttributeKeyEnum.Image), ComparisonOperator.Exists, sendFalseValue: false)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="SearchContentControlWrapper">
+                        <div class="floatLeft" style="margin-right: 10px;">
+                            <span class="lc Label">
+                                @Translation.Get("Tip predmeta"):
+                            </span>
+                            <div class="floatLeft">
+                                @Html.DropDownList("gid", @Model.GroupList, string.Concat("-- ", Translation.Get("Odaberite tip predmeta"), "  --"), new { @class = "DropDownList SearchDropDownList", onChange = "javascript:OnTipPredmetaChanged();" })
+                            </div>
+                        </div>
+                        <div class="floatLeft">
+                            <div class="lc Label">
+                                @Translation.Get("Samo oglasi sa cijenom")
+                            </div>
+                            <div class="floatLeft" style="margin: 3px;">
+                                @Html.ItemCheckBox(ItemHelpers.GetAttributeDefinition(AttributeKeyEnum.Price), ComparisonOperator.Exists, sendFalseValue: false)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="SearchContentControlWrapper">
+                        <div class="floatLeft" style="margin-right: 10px;">
+                            <span class="lc Label">
+                                @Translation.Get("Županija"):         
+                            </span>
+                            <div class="floatLeft">
+                                @Html.ItemDropDownListReference(ItemHelpers.GetAttributeDefinition(AttributeKeyEnum.County), Model.AttributeTemplate,
+                                htmlAttributes: new { @class = "DropDownList SearchDropDownList" },
+                                optionLabel: string.Concat("-- ", Translation.Get("Odaberite županiju"), " --"))
+                            </div>
+                        </div>
+                        @* <div class="Label">
+                            @Html.ActionLink("Pretraži po karti", "", "", new { @class = "SearchMap" })
+                        </div>*@
+                    </div>
+                    <div class="SearchContentControlWrapper">
+                        <div class="floatLeft">
+                            <span class="lc Label">
+                                @Translation.Get("Grad/Općina"):     
+                            </span>
+                        </div>
+                        <div class="floatLeft">
+                            @Html.ItemDropDownListReference(ItemHelpers.GetAttributeDefinition(AttributeKeyEnum.DistrictCity), Model.AttributeTemplate,
+                        htmlAttributes: new { @class = "DropDownList SearchDropDownList" },
+                        optionLabel: string.Concat("-- ", Translation.Get("Odaberite grad/općinu"), " --"))
+                        </div>
+                    </div>
+                    <div class="SearchContentControlWrapper">
+                        <div class="floatLeft">
+                            @{IAttributeDefinition priceAttribute = ItemHelpers.GetAttributeDefinition(AttributeKeyEnum.Price);}
+                            <span class="lc Label">
+                                @Translation.Get("Cijena"):                    
+                            </span>
+                            <div class="floatLeft">
+                                @Html.ItemNumberInput(priceAttribute, ComparisonOperator.GreaterThanOrEqual, new { @class = "FormTextbox TextboxSmall" })
+                            </div>
+                            <span class="floatLeft Label" style="margin: 0px 10px;">
+                                @Translation.Get("do"): 
+                            </span>
+                            <div class="floatLeft" style="margin-right: 10px;">
+                                @Html.ItemNumberInput(priceAttribute, ComparisonOperator.LessThanOrEqual, new { @class = "FormTextbox TextboxSmall" })
+                            </div>
+                            <span class="Label floatLeft">kn    
+                            </span>
+                        </div>
+                    </div>
+                    <div class="additionalSearchWrapper">
+                        <div id="additionalSearch" class="additionalSearch" style="display: none;">
+                            <ul>
+                                @GenerateAdditionalSearchParameters(Model.GetElements())
+                            </ul>
+                        </div>
+                        <div class="additionalSearchButtonContainer floatLeft">
+                            @if (Model.AttributeTemplate != null)
+                            {
+                                <a id="additionalSearchLink" href="javascript:toggle('additionalSearch','additionalSearchLink');" style="line-height: 30px" class="floatLeft">@Translation.Get("Proširi pretragu")</a>
+                            }
+                            <input id="SearchBtn" type="submit" value="@Translation.Get("Pretraži")" class="ButtonBlue roundedCornersMin floatRight"
+                                onclick="javascript: OnSubmit();" />
+                        </div>
+                    </div>
+                </div>
+
+            }
+            <div id="SearchMap" style="display: none; left: -10000px;">
+                @Html.Partial("SearchMap")
+            </div>
+            <br style="clear: left;" />
+            <br style="clear: left;" />
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        // Log In
+        $('.SearchMap').click(function (e) {
+            $('#SearchMap').css({});
+            $('#SearchMap').modal({
+                onClose: function (dialog) { $('#SearchMap').css({}); $.modal.close(); /* must call this!*/ }
+            });
+            return false;
+        });
+    });
+
+    function OnSubmit() {
+        $('#ActionInput').attr('value', '');
+    }
+
+    function OnTipPredmetaChanged() {
+
+        $('#SearchBox').hide();
+        $('#SearchAjaxLoader').show();
+        $('#ActionInput').attr('value', 'searchBoxRefresh');
+        AjaxSubmitForm($('#SearchForm'),
+            function (data) {
+                $('#SearchBoxViewContainer').html(data);
+            });
+
+
+    }
+
+
+    /*Resaizanje dodatne pretrage*/
+    function toggle(showHideDiv, switchTextDiv) {
+        var ele = document.getElementById(showHideDiv);
+        var text = document.getElementById(switchTextDiv);
+        if (ele.style.display == "block") {
+            ele.style.display = "none";
+            text.innerHTML = "@Translation.Get("Proširi pretragu")";
+        }
+        else {
+            ele.style.display = "block";
+            text.innerHTML = "@Translation.Get("Suzi pretragu")";
+        }
+    }
+
+    jQuery(function ($) {
+        $.datepicker.regional['hr'] = {
+            closeText: 'Zatvori',
+            prevText: '&#x3c;',
+            nextText: '&#x3e;',
+            currentText: 'Danas',
+            monthNames: ['Siječanj', 'Veljača', 'Ožujak', 'Travanj', 'Svibanj', 'Lipanj',
+            'Srpanj', 'Kolovoz', 'Rujan', 'Listopad', 'Studeni', 'Prosinac'],
+            monthNamesShort: ['Sij', 'Velj', 'Ožu', 'Tra', 'Svi', 'Lip',
+            'Srp', 'Kol', 'Ruj', 'Lis', 'Stu', 'Pro'],
+            dayNames: ['Nedjelja', 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota'],
+            dayNamesShort: ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'],
+            dayNamesMin: ['Ne', 'Po', 'Ut', 'Sr', 'Če', 'Pe', 'Su'],
+            weekHeader: 'Tje',
+            dateFormat: 'dd.mm.yy.',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['hr']);
+    });
+    $(function () {
+        $(".datepicker").datepicker();
+    });
+
+    @ItemHelpers.GetRefreshDropDownListReferenceJSF()
+    @CommonHelpers.GetAjaxSubmitFormJSF()
+</script>
+
+
+
+@if (!Request.IsAjaxRequest())
+{ 
+    <script type="text/javascript">
+        $('document').ready(function () { OnTipPredmetaChanged(); });
+    </script>
+
+    @Html.Raw(@"</div>")
+}
+
+@helper GenerateAdditionalSearchParameters(List<dynamic> elements)
+{
+    foreach (var element in elements)
+    {
+    <li>
+        @if (element is IAttributeTemplateAttributeGroup)
+        {
+            <span class="floatLeft Label" style="clear: left;">
+                <b>@(((IAttributeTemplateAttributeGroup)element).GetDisplayValue())</b>
+            </span>
+            <ul>
+                @GenerateAdditionalSearchParameters(Model.GetElements(element))
+            </ul>
+        }
+        else
+        {
+            IAttributeTemplateAttribute attr = element;
+         
+            <span class="lc Label" style="clear: left; display: block;">
+                @attr.Attribute.GetDisplayValue():
+            </span>
+      
+            switch (attr.Attribute.DataType)
+            {
+                case AttributeDataTypeEnum.DateTime:
+            <div class="floatLeft">
+                @Html.ItemCustomInput(attr.Attribute, ComparisonOperator.GreaterThanOrEqual, new { type = "datetime", @class = "datepicker FormTextbox" })
+            </div>
+            <span class="floatLeft Label" style="margin: 0px 10px;">
+                @Translation.Get("do"):
+            </span>
+            <div class="floatLeft">
+                @Html.ItemCustomInput(attr.Attribute, ComparisonOperator.LessThanOrEqual, new { type = "datetime", @class = "datepicker FormTextbox" })
+            </div>
+                    break;
+                case AttributeDataTypeEnum.Bool:
+            <div class="floatLeft" style="margin: 5px 0px;">
+                @Html.ItemCheckBox(attr.Attribute, ComparisonOperator.Equals, sendFalseValue: false)
+            </div>
+                    break;
+                case AttributeDataTypeEnum.Decimal:
+                case AttributeDataTypeEnum.Int:
+            <div class="floatLeft">
+                @Html.ItemNumberInput(attr.Attribute, ComparisonOperator.GreaterThanOrEqual, new { @class = "FormTextbox" })
+            </div>
+            <span class="floatLeft Label" style="margin: 0px 10px;">
+                @Translation.Get("do"):
+            </span>
+            <div class="floatLeft">
+                @Html.ItemNumberInput(attr.Attribute, ComparisonOperator.LessThanOrEqual, new { @class = "FormTextbox" })
+            </div>
+                    break;
+                case AttributeDataTypeEnum.Reference:
+            <div class="floatLeft">
+                @Html.ItemDropDownListReference(attr.Attribute, Model.AttributeTemplate,
+                            optionLabel: string.Concat("-- ", Translation.Get("Odaberite"), " --"))
+            </div>
+                    break;
+                case AttributeDataTypeEnum.String:
+            <div class="floatLeft">
+                @Html.ItemCustomInput(attr.Attribute, ComparisonOperator.Like, new { type = "text", @class = "FormTextbox" })
+            </div>
+                    break;
+            }
+
+        }
+    </li>
+    }
+}

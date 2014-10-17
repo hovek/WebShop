@@ -1,0 +1,82 @@
+﻿@using M = WebShop.Models
+@using WebShop.Models
+@using Syrilium.Modules.BusinessObjects.Item
+@using WebShop.BusinessObjectsInterface.Item
+
+@model WebShop.Models.Newsletter
+
+@{
+    ViewBag.Title = M.Translation.Get("Newsletter");
+}
+@if (ViewBag.MyAccountMenu)
+{
+    <div>
+        @section MyAccountMenu
+        {
+            @Html.Partial("MyAccountMenu")
+        }
+    </div>
+}
+<div class="NewsletterSubscription">
+    <h2>
+        @M.Translation.Get("Newsletter")</h2>
+    <p>
+        @M.Translation.Get("Odaberite grupu kako bi ste primali newsletter-e od ovrhe.hr")</p>
+             @Html.Partial("MessageBox")
+    <div class="">
+        <div id="NewsletterUpdateForm" class="NewsletterUpdateForm floatLeft">
+            @using (Html.BeginForm("Newsletter", "MyAccount"))
+            {
+                foreach (IItem itemD in LeftMenu.GetMenuCached())
+                { 
+           
+                <div class="GroupItem">
+                    <div class="GroupItemText floatLeft">
+                        <span class="TitleSmall"><b>
+                            @itemD.Attributes[AttributeKeyEnum.Name].GetValueFormated()
+                        </b></span>
+                    </div>
+                   
+                    @Html.CheckBox("ItemDepartment" + @itemD.Id, Model.chekedItems.Contains(@itemD.Id) ? true : false, new { @class = "ic_parent floatRight", id = @itemD.Id })
+                    <br />
+                </div>
+                <br />
+                <ul class="@Html.Raw("ic_parent")@itemD.Id">
+                    @foreach (IItem itemG in itemD)
+                    {  
+                   
+                        <li><span class="DepartmentItemText">@itemG.Attributes[AttributeKeyEnum.Name].GetValueFormated()
+                        </span>
+                            @Html.CheckBox("ItemGroup" + @itemG.Id, Model.chekedItems.Contains(@itemG.Id) ? true : false, new { @class = "ic_child floatRight" })
+                        </li>  
+                    }
+                </ul>
+            
+                <br />
+              
+                }
+                    <input type="hidden" name="button" value="submit"/>
+                <input type="submit" value="@M.Translation.Get("Snimi")" class="ButtonBlue roundedCornersMin floatRight" />
+            }
+        </div>
+    </div>
+    <br /> 
+</div>
+<script type="text/javascript">
+    jQuery(function ($) {
+        $(".ic_parent").click(function () {
+            console.log('checked');
+            if ($(this).attr('checked')) {
+                console.log('checked');
+                $('.ic_parent' + $(this).attr('id')).find('.ic_child').attr('checked', 'checked');
+            } else {
+                console.log('unchecked');
+                $('.ic_parent' + $(this).attr('id')).find('.ic_child').removeAttr('checked');
+            }
+
+        });
+    });
+
+ 
+</script>
+

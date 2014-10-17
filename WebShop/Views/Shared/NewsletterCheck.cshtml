@@ -1,0 +1,43 @@
+﻿@using WebShop.Models
+@model NewsletterCheck
+
+@{ 
+    string formName = string.Concat("NewsletterCheckForm", Model.ItemId);
+    string divName = string.Concat("SaveCheckBoxWrapper", Model.ItemId);
+}
+
+@if (!Request.IsAjaxRequest())
+{
+    @Html.Raw(string.Concat(@"<div class=""SaveCheckBoxWrapper"" id=""",divName,@""">"))
+}
+
+<span class="floatLeft FollowUsEmail"><b>@Translation.Get("Pratite putem email-a"): </b></span>
+<div  class="floatLeft">
+@using (Html.BeginForm("NewsletterCheck", "Subject", FormMethod.Post, new { id = formName }))
+{ 
+	<input type="hidden" name="itemId" value="@Model.ItemId" />
+	<input type="hidden" name="isChecked" value="@(Model.IsChecked?"False":"True")" />
+	<input type="button" id="NewsletterCheckSubmit" class="@(Model.IsChecked ? "SaveChekBoxTrue" : "SaveChekBoxFalse") receiveNewsletter" onclick="javascript: NewsletterCheck('@divName', '@formName');" />
+}
+</div>
+
+<script type="text/javascript">
+    function NewsletterCheck(containerName, formName) {
+        AjaxSubmitForm($('#'+formName),
+            function (data) {
+                var d = "<div>" + data + "</div>";
+                if ($(d).find("div[id='LoginDiv']").length) {
+                    $('#Login').html(data);
+                }
+                else {
+                    $('#' + containerName).html(data);
+                }
+            }
+        );
+    }
+</script>
+
+@if (!Request.IsAjaxRequest())
+{
+    @Html.Raw(@"</div>")
+}

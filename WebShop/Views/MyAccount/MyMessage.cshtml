@@ -1,0 +1,34 @@
+﻿@using S = Syrilium.Modules.BusinessObjects
+@using WebShop.Models
+@{
+    ViewBag.Title = Translation.Get("Moje poruke");
+}
+@if (ViewBag.MyAccountMenu)
+{
+    <div>
+        @section MyAccountMenu
+        {
+            @Html.Partial("MyAccountMenu")
+        }
+    </div>
+}
+<h2>
+    @Translation.Get("Moja poruke")
+</h2>
+@foreach (S.UserInquiry userInquiry in S.UserInquiry.UserInquiryList(WebShop.SessionState.I.User.Id))
+{ 
+    <h3 class="Blue">
+        @userInquiry.Title
+    </h3>
+    <span><b>@Translation.Get("Datum slanja:")</b>
+    @userInquiry.DateTime.ToShortDateString()</span>
+     <span><b>@Translation.Get("Vrijeme slanja:")</b>
+    @userInquiry.DateTime.ToShortTimeString()</span>
+    if (userInquiry.PartnerId != null)
+    {
+        userInquiry.Partner.Name.ToString();
+    }
+    <p>
+        @MvcHtmlString.Create(userInquiry.Message);
+    </p>
+}

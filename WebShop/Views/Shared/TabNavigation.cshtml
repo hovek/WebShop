@@ -1,0 +1,51 @@
+﻿@using Syrilium.Modules.BusinessObjects
+@using M = WebShop.Models
+@model WebShop.Models.RepeaterItems
+
+@{
+    Model.Request = Request;
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#RepeaterTopItemsItem').click(function (e) {
+            e.preventDefault();
+            $('#RepeaterTopItems').submit();
+        });
+        $('#RepeaterLastItemsItem').click(function (e) {
+            e.preventDefault();
+            $('#RepeaterLastItems').submit();
+        });
+
+        $("li.NotSelected").click(function (e) {
+            $(this).toggleClass('Selected');
+            $(".NotSelected").not(this).removeClass('Selected'); //remove the clicked class from all other elements
+            $(".Selected").not(this).removeClass('Selected').addClass('NotSelected');
+            $(this).addClass('Selected');
+
+        });
+    });
+</script>
+<div class="RightColumnControl">
+    @using (Ajax.BeginForm("RepeaterTopItems", "Home", null, new AjaxOptions { UpdateTargetId = "UpdatePanel" }, new { id = "RepeaterTopItems" })) {
+        <input type="hidden" name="departmentId" value="@Model.DepartmentId" />
+        <input type="hidden" name="partnerId" value="@Model.PartnerId" />
+    }
+    @using (Ajax.BeginForm("RepeaterLastItems", "Home", null, new AjaxOptions { UpdateTargetId = "UpdatePanel" }, new { id = "RepeaterLastItems" })) { 
+        <input type="hidden" name="departmentId" value="@Model.DepartmentId" />
+        <input type="hidden" name="partnerId" value="@Model.PartnerId" />
+    }
+
+    <div id="TabPanel">
+        <ul class="clearfix">
+            <li class="NotSelected Selected roundedCornersSmallTop">
+                @Html.ActionLink(M.Translation.Get("TOP PONUDA"), "Index", "Home", new { tabItem = "top" }, new { id = "RepeaterTopItemsItem" })</li>
+            <li class="NotSelected roundedCornersSmallTop">
+                @Html.ActionLink(M.Translation.Get("NAJNOVIJE"), "Index", "Home", new { tabItem = "latest" }, new { id = "RepeaterLastItemsItem" }) </li>
+
+        </ul>
+    </div>
+    <div id="UpdatePanel">
+        @Html.Partial("RepeaterTopItems",Model)
+    </div>
+</div>

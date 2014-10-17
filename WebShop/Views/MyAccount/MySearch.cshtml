@@ -1,0 +1,34 @@
+﻿@using S = Syrilium.Modules.BusinessObjects
+@using WebShop.Models
+@{
+    ViewBag.Title = Translation.Get("Moje pretrage");
+}
+@if (ViewBag.MyAccountMenu)
+{
+    <div>
+        @section MyAccountMenu
+        {
+            @Html.Partial("MyAccountMenu")
+        }
+    </div>
+}
+<h2>
+    @Translation.Get("Moja pretraživanja")
+</h2>
+@foreach (S.SearchInquiry searchInquiry in S.SearchInquiry.SearchInquiryList(WebShop.SessionState.I.User.Id))
+{ 
+    <div style="margin-bottom:10px;">
+        <a href="@searchInquiry.Url" >
+            <h3 style="margin-bottom: 10px;" class="Blue">
+                @searchInquiry.Name
+            </h3>
+        </a>
+        <span>
+            <b>
+                @Translation.Get("Datum pretrage"):
+            </b>
+            @searchInquiry.DateTime.ToShortDateString()
+        </span>
+    </div>
+
+}

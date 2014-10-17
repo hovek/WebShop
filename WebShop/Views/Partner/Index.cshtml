@@ -1,0 +1,85 @@
+﻿@using Syrilium.Modules.BusinessObjects
+@using M = WebShop.Models
+@using Syrilium.CommonInterface.Caching
+@using WebShop.BusinessObjectsInterface
+@{
+    ViewBag.Title = M.Translation.Get("Partneri");
+}
+
+@if (ViewBag.CustomPage)
+{
+    <div>
+        @section CustomPage
+        {
+            @Html.Partial("CustomPage")
+        }
+    </div>
+}
+@if (ViewData["Content"] != null)
+{    <h2>
+    @MvcHtmlString.Create(ViewData["TitlePage"].ToString())
+</h2>
+    @MvcHtmlString.Create(ViewData["Content"].ToString())
+}
+else
+{
+    foreach (Partner partner in WebShop.Module.I<ICache>(CacheNames.MainCache).I<Partner>().GetPartners())
+    { 
+    <div class="PartnerWrapper">
+        <div>
+            <h2 class="paddingSmall">
+                @partner.Name
+            </h2>
+        </div>
+      
+        <div>
+            <div class="ImagePartnerWrapper floatLeft">
+                <img alt="" src="@partner.Logo" class="floatLeft" />
+            </div>
+            <div class="ContactItems roundedCornersSmall  floatRight">
+                <div class="ContactItemsHeader paddingBig">
+                    <h3>  @M.Translation.Get("Kontakt informacije")</h3>
+                </div>
+                <div class="ContactItemsContent floatLeft paddingBig">
+                    <div  class="ContactItemWrapper">
+                        <span class=" ContactItem "><b>@M.Translation.Get("Adresa"):</b></span> <span class="ContactItemValue">@partner.Address, @partner.City</span>
+                    </div>
+                    <div class="ContactItemWrapper">
+                        <span class=" ContactItem "><b>@M.Translation.Get("Telefon"):</b></span><span class="ContactItemValue"> @partner.Phone</span>
+                    </div>
+                    <div class="ContactItemWrapper">
+                        <span class=" ContactItem "><b>@M.Translation.Get("Email"):</b></span><span class="Orange ContactItemValue"> @partner.Email</span>
+                    </div>
+                    <div class="ContactItemWrapper">
+                        <span class=" ContactItem "><b>@M.Translation.Get("Fax"):</b></span><span class="ContactItemValue"> @partner.Fax</span>
+                    </div>
+                    <div class="ContactItemWrapper">
+                        <span class=" ContactItem "><b>@M.Translation.Get("Web"):</b></span><a href="@partner.URL"><span class="ContactItemValue Blue">@partner.URL</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(partner.About))
+        {
+            <div class="PartnerAbout">
+
+                <div class="TitleSmall">
+                    <b>@M.Translation.Get("O KLIJENTU") </b>
+                </div>
+                @MvcHtmlString.Create(partner.About)
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(partner.Services))
+        {
+            <div class="PartnerAbout">
+                <div class="TitleSmall">
+                    <b>@M.Translation.Get("USLUGE") </b>
+                </div>
+                @MvcHtmlString.Create(partner.Services)
+            </div>
+        }
+    </div>
+  
+    }
+
+}

@@ -1,0 +1,103 @@
+﻿@using Syrilium.Modules.BusinessObjects;
+@using M = WebShop.Models
+@model M.Login
+
+@if (!IsAjax)
+{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (!Model.LoginAttempt)
+{
+    @Html.Raw(string.Concat(@"<div id=""LoginDiv"" class=""PopUp roundedCornersBig""",IsAjax?@" style=""display:none;""":"",">"))
+}
+
+<div>
+    <div class="PopUpHeader">
+        <h2>@M.Translation.Get("Prijava")</h2>
+    </div>
+    @using (Html.BeginForm("LoginAttempt", "MyAccount", FormMethod.Post, new { id = "LoginAttemptForm" }))
+    {
+        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+        <input type="hidden" name="isAjaxRequest" value="@(Model.IsAjaxRequest?"true":"false")" />        
+        <div class="PopUpContent">
+            <div class=" RegistrationLink">
+                <span class="Label" style="">Niste registrirani?</span>@Html.ActionLink("Registrirajte se", "Registration", "MyAccount", null, new { @class = "Blue" })
+                <span>| @Html.ActionLink("Zaboravljena lozinka?", "ForgottenPassword", "MyAccount", null, new { @class = "Blue" })</span>
+            </div>
+            <div class="ContentLoginControls">
+                <div class="Label floatLeft">
+                    @M.Translation.Get("Korisničko ime"):
+                </div>
+                @Html.TextBox("username", "", new { @class = "FormTextbox floatLeft" })
+                <br style="clear: left;" />
+                <div class="Label floatLeft">
+                    @M.Translation.Get("Lozinka"):
+                </div>
+                @Html.Password("password", "", new { @class = "FormTextbox floatLeft" })
+                <br style="clear: left;" />
+                <div style="width: 100%">
+                    <div class="floatLeft Label">
+                        @M.Translation.Get("Zapamti me")
+                    </div>
+                    @Html.CheckBox("persistent", false, new { @class = "CheckBox floatLeft marginSmall" })
+                </div>
+            </div>
+        </div>
+        <div class="Red ContentLoginMessage">
+            <b>
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                { 
+                    @Model.ErrorMessage
+                }
+            </b>
+        </div>
+
+        <div class="PopUpFooter">
+            <div class="floatRight ">
+                <input type="button" value="@M.Translation.Get("POTVRDI")" class="ButtonBlue roundedCornersMin floatRight" onclick="javascript: OnSubmit();" />
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    //ako je ajax prikazujemo modalni dialog
+    @if (IsAjax && !Model.LoginAttempt)
+    {
+        @Html.Raw(@"$('#LoginDiv').modal({
+            onClose: function (dialog) { 
+                        $.modal.close(); $('#LoginDiv').remove(); 
+                    }
+        });");
+    }
+
+    function OnSubmit() {
+        AjaxSubmitForm($('#LoginAttemptForm'),
+            function (data) {
+                $('#LoginDiv').html(data);
+                CloseLoginPopUp();
+            }
+        );
+    }
+    
+    function CloseLoginPopUp() {
+        @if (Model.LoginSucceeded)
+        {
+            @Html.Raw("$.modal.close();");
+            if(Model.IsAjaxRequest)
+            {
+                @Html.Raw("window.location.reload(true);");
+            }
+            else
+            {
+                 @Html.Raw(string.Concat("window.location='", Model.ReturnUrl, "';"));
+            }
+        }
+    }
+</script>
+
+@if (!Model.LoginAttempt)
+{
+    @Html.Raw("</div>")
+}

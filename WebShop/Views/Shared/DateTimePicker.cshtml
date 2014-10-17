@@ -1,0 +1,5 @@
+﻿@using WebShop.Infrastructure
+
+@Html.DropDownList("Day", CommonHelpers.DaysOfMonth(""), " Dan ", new { @class = "DateTimeList DropDownList " })
+@Html.DropDownList("Month", CommonHelpers.Months(""), " Mjesec ", new { @class = "DateTimeList DropDownList " })
+@Html.DropDownList("Year", CommonHelpers.Year(""), "Godina", new { @class = "DateTimeList DropDownList " })

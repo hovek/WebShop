@@ -1,0 +1,86 @@
+﻿@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+   
+}
+<div class=" BoxWrapper">
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+        <br style="clear: left;" />
+    }
+    @using (Html.BeginForm("News", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "NewsListForm" }))
+    { 
+      
+        <span class="label">Popis vijesti:</span>
+        @Html.DropDownList("newsList", WebShop.Models.News.GetNews(), "-- popis vijesti -- ", new { @class = "NewsList DropDownList floatLeft" })
+
+        <br style="clear: left;" />
+   
+        <span class="label">Id vijesti: </span>
+        @Html.TextBox("idNews", ViewData["idNews"], new { @class = "Textbox TextboxSmall", @readonly = true })
+        <br style="clear: left;" />
+        <span class="label">Naslov:</span>
+        @Html.TextBox("title", ViewData["Title"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Uvodni tekst:</span>
+        @Html.TextArea("introductionText", (string)ViewData["IntroductionText"], new { @class = "TextArea TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Ime autora:</span>
+        @Html.TextBox("autor", ViewData["Autor"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Datum:</span>
+        @Html.TextBox("dateTime", ViewData["DateTime"], new { @class = "Textbox datepicker", id = "datepicker" })
+
+    
+ 
+        <br style="clear: left;" />
+        
+        <span class="label">Slika vijesti:</span>
+        <div class="ImageNews floatLeft">
+            <span class="floatLeft" style="background:url('@(ViewData["ImageUrl"]!=null?WebShop.Infrastructure.CommonHelpers.GetNewsImagePath("W250H200", ViewData["ImageUrl"].ToString()):"")') center center no-repeat; width:250px; height:200px;"></span>
+        </div>
+        <br style="clear: left;" />
+        <span class="label">Odaberi sliku:</span>
+        <input type="file" name="file" id="file" class="fileUpload" size="100" />
+        <br style="clear: left;" />
+        <span class="label">Autor Slike:</span>
+        @Html.TextBox("autorPicture", ViewData["AutorPicture"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Prikaži vijest:</span>
+        @Html.CheckBox("showNews", new { @class = "ChkShowNews" })
+   
+        <br style="clear: left;" />
+        <div class="ControlWrapper">
+            <span class="label">Tekst:</span>
+            @Html.TextArea("EditorText", (string)ViewData["EditorText"], new { @name = "EditorText" })
+        </div>
+        <br style="clear: left;" />
+        
+        <div class="ButtonHolder">
+            <input type="submit" name="button" value="Save" class="ButtonBlue" />
+            <input type="submit" name="button" value="Delete" class="ButtonRed" />
+            <input type="submit" name="button" value="New" class="ButtonOrange" />
+        </div>
+    
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#EditorText').ckeditor();
+    });
+
+    $(function () {
+        $("#newsList option").click(function () {
+            $("#NewsListForm").submit();
+        });
+
+        $("#newsList").change(function () {
+            $("#NewsListForm").submit();
+        });
+    });
+</script>
+

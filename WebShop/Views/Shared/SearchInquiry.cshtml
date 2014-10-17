@@ -1,0 +1,37 @@
+﻿@using WebShop.Models
+<div id="SearchInquiryDiv" class="PopUp roundedCornersBig">
+    <div class="PopUpHeader">
+        <h2>@Translation.Get("Snimi pretragu")</h2>
+    </div>
+    @using (Ajax.BeginForm("SearchInquiry", "Search", new AjaxOptions { UpdateTargetId = "SearchInquiryDiv" }))
+    { 
+        <div class="PopUpContent">
+            <div class="PopUpControls">
+            <div class="Label floatLeft">
+                @Translation.Get("Naziv pretrage"):                         
+            </div>
+            <div>
+                @Html.TextBox("name", "", new { @class = "Textbox FormTextbox" })
+            </div>
+                </div>
+        <span class="fontSmall">*@Translation.Get("Unesite ime pretrage po vašem izboru. Sve snimljene pretrage možete pregledati na stranici ") @Html.ActionLink(Translation.Get("moj račun"), "MySearch","MyAccount",null, new { @class="Blue" })  </span>
+                   <br style="clear: left;" />
+                      <br style="clear: left;" />
+        @if (ViewData["Validation"] != null)
+        { 
+        <span class="Red fontSmall">
+            <b>
+                @ViewData["Validation"]
+            </b>
+        </span>
+        }
+             </div>
+            <div class="PopUpFooter">
+                <div class="floatRight ">
+                    <input type="submit" value="@WebShop.Models.Translation.Get("Snimi")" class="ButtonBlue roundedCornersMin floatRight" />
+                </div>
+            </div>
+       
+        
+    }
+</div>

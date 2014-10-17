@@ -1,0 +1,9 @@
+﻿@using WebShop.Models
+@using WebShop.BusinessObjectsInterface.Item
+@model ConstrainedList
+
+<option value="">---Odaberite---</option>
+@foreach(ICommonReferenceListItem item in Model.GetList())
+{
+    <option value="@item.Id">@item.Value</option>
+}

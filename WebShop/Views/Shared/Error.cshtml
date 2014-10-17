@@ -1,0 +1,15 @@
+﻿@using WebShop.Models
+@model System.Web.Mvc.HandleErrorInfo
+@{
+    
+    ViewBag.Title = Translation.Get("Greška");  
+}
+
+<h2>
+    @Translation.Get("Greška") 
+</h2>
+<p>   
+    @Translation.Get("Oprostite, dogodila se greška prilikom procesiranja vašeg zahtjeva. Vratite se na početnu stranicu kako bi nastavili sa radom.")
+    @Html.ActionLink(Translation.Get("Naslovna stranica"),"Index","Home")
+</p>
+ 

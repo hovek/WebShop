@@ -1,0 +1,31 @@
+﻿@using WebShop.Models
+@if (ViewData["MessageSuccess"] != null)
+{
+    <div class="MessageBoxSuccess roundedCornersMin paddingBig" style="margin-bottom: 20px;">
+        <h3>
+                  @ViewData["MessageSuccessTitle"]</h3>
+        <span>
+            @ViewData["MessageSuccess"]
+        </span>
+    </div>
+}
+@if (ViewData["MessageBoxError"] != null)
+{
+    <div class="MessageBoxError roundedCornersMin paddingBig" style="margin-bottom: 20px;">
+        <h3>
+             @ViewData["MessageBoxErrorTitle"]</h3>
+        <span>
+            @ViewData["MessageBoxError"]
+        </span>
+    </div>
+}
+@if (ViewData["MessageBoxAlert"] != null)
+{
+    <div class="MessageBoxAlert roundedCornersMin paddingBig" style="margin-bottom: 20px;">
+        <h3>
+             @ViewData["MessageBoxAlertTitle"]</h3>
+        <span>
+            @ViewData["MessageBoxAlert"]
+        </span>
+    </div>
+}

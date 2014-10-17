@@ -1,0 +1,23 @@
+﻿@using System.Globalization
+@using WebShop.Models
+@model WebShop.Models.Subject
+<div>
+    <div class="ControlBoxMainHeader roundedCornersSmall">
+        <div class="CheckBoxIcon">
+            <span class="ControlBoxHeaderText">@Translation.Get("PRATITE PUTEM MAIL-a")</span></div>
+    </div>
+    <div class="dividerBig">
+    </div>
+    <div class="PriceBoxWrapper roundedCornersSmall">
+        <div class="ControlBoxContent floatLeft">
+            <div class="paddingBig">
+                @Html.Partial("NewsletterCheck", Model.NewsletterCheck)
+                <div>
+                    <span><b>@Translation.Get("Napomena"):</b></span> <span class="fontSmall">@Translation.Get("Sve promjene vezane za predmet primat ćete putem emaila. Za dodatne postavke vašeg newslettera pritisnite link za stranicu sa postavkama")
+                         @Html.ActionLink(Translation.Get("newslettera"), "Newsletter", "MyAccount", null, new { @class = "loginPopUp"})
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

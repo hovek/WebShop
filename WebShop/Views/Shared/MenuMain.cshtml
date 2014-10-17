@@ -1,0 +1,96 @@
+﻿@using WebShop.Models
+@using WebShop
+@using WebShop.Infrastructure
+@model MenuMain
+
+@using (Ajax.BeginForm("Login", "MyAccount", new AjaxOptions { UpdateTargetId = "Login" }))
+{
+    <input id="LoginSubmit" type="submit" style="display:none;" />
+}
+
+<script type="text/javascript">
+    $(window).load(function () {
+        $("#MyAccount").click(
+        function () { $("#MyAccountPopup").prependTo("#MyAccount").show(); })
+        $('body').click(
+        function (e) {
+            if ($(e.target).closest('#MyAccount').get(0) == null) { $("#MyAccountPopup").hide(); }
+        });
+        $("#MyAccountPopup").css("width", $("#MyAccount").width());
+
+    });
+
+    jQuery(function ($) {
+        // Log In
+        $('.Login').click(function (e) {
+            $('#LoginSubmit').click();
+            return false;
+        });
+    });
+</script>
+
+<div class="MenuMainContainer">
+    <div class="MenuMainWrapper">
+        @using (Html.BeginForm("MenuMain", "Home"))
+        {
+ 
+            <div class="LeftSideMenuMain ">
+                <div class="HomeButton roundedCornersMinTop">
+                    @Html.ActionLink(" ", "Index", "Home")
+                </div>
+                <div class="ButtonMenuMain roundedCornersMinTop">
+                    @Html.MenuLink(Translation.Get("O NAMA"), "Index", "AboutUs", "SelectedItem", "1")
+                </div>
+                <div class="ButtonMenuMain roundedCornersMinTop">
+                    @Html.MenuLink(Translation.Get("USLUGE"), "Index", "Services", "SelectedItem", "2")
+                </div>
+                <div class="ButtonMenuMain roundedCornersMinTop">
+                    @Html.MenuLink(Translation.Get("PARTNERI"), "Index", "Partner", "SelectedItem", "3")
+                </div>
+                <div class="ButtonMenuMain roundedCornersMinTop">
+                    @Html.MenuLink(Translation.Get("INFO"), "Index", "Info", "SelectedItem", "4")
+                </div>
+                <div class="ButtonMenuMain roundedCornersMinTop">
+                    @Html.MenuLink(Translation.Get("KONTAKT"), "Index", "Contact", "SelectedItem", "")
+                </div>
+                <div class="ButtonMenuMain roundedCornersMinTop">
+                    @Html.MenuLink(Translation.Get("MARKETING"), "Index", "Marketing", "SelectedItem", "5")
+                </div>
+            </div>
+        }
+        <div class="MiddleMenuMain"></div>
+        <div id="MyAccount" class="RightSideMenuMain">
+            <div class="MyAccountIcon">
+            </div>
+            <div class="MyAccountText">
+               @Translation.Get("MOJ RAČUN")</div>
+            <div class="MyAccountArrowDown">
+            </div>
+            <div id="MyAccountPopup" class="MyAccountPopup">
+                <ul>
+                    @{
+                        if (SessionState.I.Login == null)
+                        {
+                        <li class="ListArrow"><span class="Login">@Translation.Get("Prijava")</span></li>
+                        }
+                        else
+                        {  
+                        <li class="ListArrow"><a href="@Url.Action("Logout", "MyAccount")"><span class="">@Translation.Get("Odjava")</span></a></li>
+                        }
+                    }
+                      @if (SessionState.I.Login == null)
+                        {
+                    <li class="ListArrow"><a href="@Url.Action("Registration", "MyAccount")"><span class="Registration">@Translation.Get("Registracija")</span></a></li>
+                    }
+                    @if (SessionState.I.Login != null)
+                    {
+                    <li class="ListArrow"><a href="@Url.Action("Index", "MyAccount")"><span class="">Moj
+                        profil</span></a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="Login" style="display: none; left: -10000px;">
+    </div>
+</div>

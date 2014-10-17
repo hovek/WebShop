@@ -1,0 +1,63 @@
+﻿@using System.Globalization
+@using WebShop.BusinessObjectsInterface.Item
+@using WebShop.Models
+@model WebShop.Models.CountDown
+
+@if(Model.AuctionDate.HasValue)
+{
+    string year = Model.AuctionDate.Value.Year.ToString();
+    string month = Model.AuctionDate.Value.Month.ToString();
+    string day = Model.AuctionDate.Value.Day.ToString();
+    string hour = Model.AuctionDate.Value.Hour.ToString();
+    string minute = Model.AuctionDate.Value.Minute.ToString();
+    string second = Model.AuctionDate.Value.Second.ToString(); 
+    
+  <script type="text/javascript">
+        http: //keith-wood.name/countdown.html
+        //tz, year, month, day, hours, mins, secs, ms
+        $(function () {
+            $('#countdown').countdown({ until: $.countdown.UTCDate(2, @year, @month - 1, @day, @hour, @minute, 0), format: 'DHMS', layout:
+            '<span id="timer" class="Time">' +
+	            '<span id="timer_days" class="timer_numbers"><b>{dnn}d</b> </span>' +
+	            '<span id="timer_hours" class="timer_numbers"><b>{hnn}h</b> </span>' +
+	            '<span id="timer_mins" class="timer_numbers"><b>{mnn}m</b> </span>' +
+	            '<span id="timer_seconds" class="timer_numbers"><b>{snn}s</b> </span>' +
+                        //'<div id="timer_labels">' +
+                        //	'<div id="timer_days_label" class="timer_labels">days</div>' +
+                        //	'<div id="timer_hours_label" class="timer_labels">hours</div>' +
+                        //	'<div id="timer_mins_label" class="timer_labels">mins</div>' +
+                        //	'<div id="timer_seconds_label" class="timer_labels">secs</div>' +
+                        //'</div>' +
+            '</span>'
+            });
+        }); 
+    </script>
+  }
+
+<div>
+	<div class="ControlBoxMainHeader roundedCornersSmall">
+		<div class="ClockIcon">
+			<span class="ControlBoxHeaderText">@Translation.Get("DATUM DRAŽBE")</span></div>
+	</div>
+	<div class="dividerBig">
+	</div>
+	<div class="CountDownWrapper roundedCornersSmall">
+		<div class="ControlBoxContent">
+			<div class="paddingBig">
+				<div class="CountDownContentWrapper">
+					<span><b>@Translation.Get("Datum dražbe"):</b> </span><span class="Red"><b>@Html.Raw(Model.AuctionDate.HasValue? Model.Product.GetValueFormated(AttributeKeyEnum.AuctionDate):Translation.Get("NEPOZNAT"))</b></span>
+				</div>
+				<br style="clear:left;" />
+				<span><b>@Translation.Get("Napomena"):</b></span> <span class="fontSmall">@Translation.Get("Datumi dražbe nisu fiksne te se mogu dogoditi manja odstupanja. Kako bi pratili sve promjene za predmet kliknite prati predmet"): </span>
+				<br style="clear:left;" />
+				<br style="clear:left;" />
+                @if(Model.AuctionDate.HasValue)
+                {
+				    <span><b>@Translation.Get("Dražba počinje za"):</b> </span>
+				    <div id="countdown">
+				    </div>
+                }
+			</div>
+		</div>
+	</div>
+</div>

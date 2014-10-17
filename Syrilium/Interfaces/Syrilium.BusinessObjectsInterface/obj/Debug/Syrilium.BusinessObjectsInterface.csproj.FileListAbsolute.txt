@@ -1,0 +1,10 @@
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\bin\Debug\Syrilium.BusinessObjectsInterface.dll
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\bin\Debug\Syrilium.BusinessObjectsInterface.pdb
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\bin\Debug\EntityFramework.dll
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\bin\Debug\Syrilium.CommonInterface.dll
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\bin\Debug\Syrilium.DataAccessInterface.dll
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\bin\Debug\Syrilium.CommonInterface.pdb
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\bin\Debug\Syrilium.DataAccessInterface.pdb
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\obj\Debug\Syrilium.BusinessObjectsInterface.csprojResolveAssemblyReference.cache
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\obj\Debug\Syrilium.BusinessObjectsInterface.dll
+D:\Programiranje\WebShop\Main\Syrilium\Interfaces\Syrilium.BusinessObjectsInterface\obj\Debug\Syrilium.BusinessObjectsInterface.pdb

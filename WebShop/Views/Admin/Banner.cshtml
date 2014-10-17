@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<div class="BoxWrapper">
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+        <br style="clear:left;"  />
+    }
+    @using (Html.BeginForm("Banner", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "BannerListForm" }))
+    { 
+  
+            <span class="label">Popis grupa:</span>
+            @Html.DropDownList("bannerLocationId", (SelectList)ViewData["BannerLocationList"], "-- grupe bannera -- ", new { @class = "BannerList DropDownList floatLeft" })
+             <br style="clear:left;"  />
+        if ((SelectList)ViewData["BannerList"] != null)
+            {
+                <span class="label">Popis bannera:</span>
+                @Html.DropDownList("bannerId", (SelectList)ViewData["BannerList"], "-- popis bannera -- ", new { @class = "BannerList DropDownList floatLeft" })
+            }
+               <br style="clear:left;"  />
+    
+            <span class="label">Id banner: </span>
+            @Html.TextBox("idBanner", ViewData["idBanner"], new { @class = "Textbox TextboxSmall", @readonly = true })
+           <br style="clear:left;"  />
+            <span class="label">Popis partnera:</span>
+            @Html.DropDownList("partnerId", (SelectList)ViewData["partnerList"], "-- popis partnera -- ", new { @class = "PartnerList DropDownList floatLeft" })
+                  <br style="clear:left;"  />
+            <span class="label">Naslov: </span>
+            @Html.TextBox("title", ViewData["Title"], new { @class = "Textbox TextboxBig" })
+           <br style="clear:left;"  />
+            <span class="label">Html: </span>
+            @Html.TextArea("bannerHtml", (string)ViewData["Html"], new { @class = "TextArea BannerHtml" })
+             <br style="clear:left;"  />
+            <span class="label">Opis: </span>
+            @Html.TextBox("description", ViewData["Description"], new { @class = "Textbox TextboxBig" })
+                  <br style="clear:left;"  />
+            <span class="label">Odaberi banner:</span>
+            <input type="file" name="file" id="file" class="fileUpload" size="100" />
+                  <br style="clear:left;"  />
+          <div class="ButtonHolder">
+            <input type="submit" name="button" value="Save" class="ButtonBlue" />
+            <input type="submit" name="button" value="Delete" class="ButtonRed" />
+        </div>
+    }
+           <br style="clear:left;"  />
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#bannerLocationId option').click(function () {
+            $("#BannerListForm").submit();
+        });
+
+        $("#bannerLocationId").change(function () {
+            $("#BannerListForm").submit();
+        });
+
+
+    });   
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('#bannerId option').click(function () {
+            $("#BannerListForm").submit();
+        });
+
+        $("#bannerId").change(function () {
+            $("#BannerListForm").submit();
+
+        });
+
+    }); 
+</script>

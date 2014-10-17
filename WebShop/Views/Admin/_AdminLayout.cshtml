@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ADMIN</title>
+    <link href="@Url.Content("~/Content/jqueryUITheme-start/jquery-ui-1.8.22.custom.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Admin.css")" rel="stylesheet" type="text/css" />
+
+    <script src="../../Scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script src="../../Scripts/jquery-ui-1.8.23.custom.min.js" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.min.js")" type="text/javascript"></script>
+    @*Tekst Editor*@
+    <script src="@Url.Content("~/Scripts/ckeditor/ckeditor.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/ckeditor/adapters/jquery.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/tiny_mce/jquery.tinymce.js")" type="text/javascript"></script>
+
+    @*Tree view*@
+    <script src="@Url.Content("~/Scripts/TreeView/treeview.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/TreeView/jsTree/jquery.jstree.js")" type="text/javascript"></script>
+
+    @*Simple modal*@
+    <script src="../../Scripts/Simplemodal_overlay/jquery_simplemodal_1_4_3.js" type="text/javascript"></script>
+
+    @*Menu*@
+    <script src="../Scripts/Menu/hoverIntent.js" type="text/javascript"></script>
+    <script src="../Scripts/Menu/Menu.js" type="text/javascript"></script>
+
+        <script src="../../Scripts/ImageDropDown/ImageDropDown.js" type="text/javascript"></script>
+
+</head>
+<body class="PageWrapper">
+    <div class="PageHolder">
+        <div class="Header">
+            @Html.Partial("HeaderAdmin")
+        </div>
+        <div class="Page">
+            <div class="AdminContentWrapper ">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+
+    jQuery(function ($) {
+        $.datepicker.regional['hr'] = {
+            closeText: 'Zatvori',
+            prevText: '&#x3c;',
+            nextText: '&#x3e;',
+            currentText: 'Danas',
+            monthNames: ['Siječanj', 'Veljača', 'Ožujak', 'Travanj', 'Svibanj', 'Lipanj',
+            'Srpanj', 'Kolovoz', 'Rujan', 'Listopad', 'Studeni', 'Prosinac'],
+            monthNamesShort: ['Sij', 'Velj', 'Ožu', 'Tra', 'Svi', 'Lip',
+            'Srp', 'Kol', 'Ruj', 'Lis', 'Stu', 'Pro'],
+            dayNames: ['Nedjelja', 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota'],
+            dayNamesShort: ['Ned', 'Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub'],
+            dayNamesMin: ['Ne', 'Po', 'Ut', 'Sr', 'Če', 'Pe', 'Su'],
+            weekHeader: 'Tje',
+            dateFormat: 'dd.mm.yy.',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['hr']);
+    });
+    $(function () {
+        $(".datepicker").datepicker();
+    });
+
+    @WebShop.Infrastructure.CommonHelpers.GetAjaxSubmitFormJSF()
+	</script>

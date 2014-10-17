@@ -1,0 +1,44 @@
+﻿@using WebShop.Models;
+@using WebShop.Infrastructure;
+@using Syrilium.Modules.BusinessObjects
+
+<div style="visibility: hidden;">
+    @using (Html.BeginForm("SetLanguage", "Home", FormMethod.Post, new { id = "LanguagePickerForm" }))
+    { 
+        <select name="LanguagePicker" id="LanguagePicker">
+            @foreach (Syrilium.Modules.BusinessObjects.Language language in WebShop.Models.Language.Get())
+            {
+                if (language.Id < 2)
+                {
+                <option  value="@language.Id" title="@language.ImageUrl" @Html.Raw(language.Id == WebShop.SessionState.I.LanguageId ? @"selected=""selected""" : "")  class="LanguageOption ">@language.Name</option> 
+                }
+            }
+        </select> 
+    }
+</div>
+<noscript>
+    <div class="floatRight" style="position: relative; width: 245px;">
+        <div style="position: absolute; top: -20px;">
+            @foreach (Syrilium.Modules.BusinessObjects.Language language in WebShop.Models.Language.Get())
+            { 
+                @Html.ActionLink(@language.Name, "SetLanguage", "Home", new { LanguagePicker = language.Id }, new { @class = "Blue LanguageAnchor floatLeft" }) 
+            }
+        </div>
+    </div>
+</noscript>
+@*Skripta koja ucitava dropdown sa slikama*@
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        $("#LanguagePicker").msDropDown();
+    });
+</script>
+<script type="text/javascript">
+    //kada je javascript on prikazuje dropdown picker else prikazuje linkove
+    var control = document.getElementById('LanguagePickerForm');
+    control.style.visibility = "visible";
+    $(function () {
+        $('#LanguagePicker_child > a').click(function () {
+            $("#LanguagePickerForm").submit();
+        });
+    });
+</script>

@@ -1,0 +1,15 @@
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.BusinessObjects.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.BusinessObjects.pdb
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\EntityFramework.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Microsoft.Practices.Prism.Composition.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Microsoft.Practices.Unity.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.BusinessObjectsInterface.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.CommonInterface.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.DataAccessInterface.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.CommonInterface.pdb
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.BusinessObjectsInterface.pdb
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\bin\Debug\Syrilium.DataAccessInterface.pdb
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\obj\Debug\Syrilium.BusinessObjects.csprojResolveAssemblyReference.cache
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\obj\Debug\Syrilium.BusinessObjects.dll
+D:\Programiranje\WebShop\Main\Syrilium\Modules\Syrilium.BusinessObjects\obj\Debug\Syrilium.BusinessObjects.pdb

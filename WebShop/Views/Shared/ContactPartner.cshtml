@@ -1,0 +1,63 @@
+﻿@using WebShop.Models
+@model WebShop.Models.ContactPartner
+
+@if (Model.Partner == null) { return; }
+
+<script type="text/javascript">
+    $(function () {
+        $('a#SubmitLink').click(function () {
+            $('form#ContactForm').submit();
+        });
+    });
+
+</script>
+
+<div class="ControlBoxMainHeader roundedCornersSmall" style="width: 498px;">
+    <div class="ContactPartnerIcon">
+        <span class="ControlBoxHeaderText">@Translation.Get("KONTAKTIRAJ OGLAŠIVAČA")</span>
+    </div>
+</div>
+<div class="ControlBoxMainContent floatLeft">
+    <div style="margin: 20px 0px 15px 0px;" class="floatLeft">
+        <div class="ContactPartnerLogo">
+            <img id="" alt="ContactPartnerLogo" src="@Model.Partner.Logo"
+                class="" />
+        </div>
+        <div class="ContactPartnerDescription">
+            <div class="TitleSmall" style="margin-bottom: 10px;">
+                <b>@Model.Partner.Name</b>
+            </div>
+
+
+            <div class="ContactItemWrapper">
+                <span class="ContactItem">
+                    <b>@Translation.Get("Adresa"): </b>
+                </span>
+                <span class="ContactItemValue">@Model.Partner.Address</span>
+            </div>
+            <div class="ContactItemWrapper">
+                <span class="ContactItem">
+                    <b>@Translation.Get("Telefon"): </b>
+                </span>
+                <span class="ContactItemValue">@Model.Partner.Phone</span>
+            </div>
+            <div class="ContactItemWrapper">
+                <span class="ContactItem">
+                    <b>@Translation.Get("Fax"): </b>
+                </span>
+                <span class="ContactItemValue">@Model.Partner.Fax</span>
+            </div>
+            <div class="ContactItemWrapper">
+                <span class="ContactItem">
+                    <b>@Translation.Get("Web"): </b>
+                </span>
+                <span class="ContactItemValue">@Html.ActionLink(@Model.Partner.URL, @Model.Partner.URL)</span>
+            </div>
+        </div>
+    </div>
+</div>
+<br style="clear: left;" />
+<div class="">
+    @Html.Partial("ContactForm", Model.ContactForm)
+</div>
+

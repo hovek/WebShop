@@ -1,0 +1,20 @@
+﻿@using WebShop.Models
+<div class="RightColumnControl">
+    <div class="ControlBoxWrapper floatLeft roundedCornersSmallTop" style="width: 225px;">
+        <div class="ControlBoxRightHeader">
+            <a href="@Url.Action("Index", "Contact")" class="">
+                <span class="InfoIcon">
+                    <span class="ControlBoxHeaderText" style="color: #fff;">@Translation.Get("INFO")<span class="More floatRight"></span></span></span>
+            </a>
+        </div>
+        <div class="ControlBoxContent">
+            <div class="InfoBoxContent">
+                <div class="paddingBig">
+                    <span class="ContactUsText"><b>@Translation.Get("Kontaktirajte nas na"):</b></span> 
+                    <span class="ContactUsPhone">@Translation.Get("Tel"): 091 1110 813</span>
+                    <span class="ContactUsEmail">@Translation.Get("E-mail: ovrhe@ovrhe.hr")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

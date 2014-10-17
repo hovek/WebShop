@@ -1,0 +1,31 @@
+﻿@using WebShop.Models
+@using WebShop
+@model Header
+
+@{
+    Model.Request = Request;
+}
+
+<div class="HeaderTop">
+    <div class="floatLeft">
+    </div>
+    <div class="floatRight">
+        @Html.Partial("LanguagePicker", new WebShop.Models.Language())
+    </div>
+    @if (SessionState.I.Login != null)
+    {   
+        <span class="floatRight" style="line-height: 32px; margin-right: 15px;"><em>@Translation.Get("Dobro došli")
+        </em>, <a href="@Url.Action("Index", "MyAccount")"><b class="Blue">
+            @Html.Raw(SessionState.I.User.Login.UserName) </b></a></span>
+    }
+</div>
+<div class="HeaderMiddle">
+    <div class="floatLeft">
+        <a href="@Model.Link" >
+        <img alt="Logo" src="@Model.Logo" width="200"/>
+            </a>
+    </div>
+    <div class="BannerHeader">
+        @Html.Partial("BannerHeader", Model.Banner)
+    </div>
+</div>

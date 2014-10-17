@@ -1,0 +1,59 @@
+﻿@using Syrilium.Modules.BusinessObjects;
+@using M = WebShop.Models
+@{
+    ViewBag.Title = M.Translation.Get("Potvrda registracije");
+}
+<div>
+    @Html.Partial("MessageBox")
+</div>
+<div class="ConfirmRegistration">
+    <div class="PopUp roundedCornersBig">
+        <div>
+            <div class="PopUpHeader">
+                <h2>
+                    @M.Translation.Get("Prijava")</h2>
+            </div>
+            @using (Html.BeginForm("ConfirmRegistration", "Myaccount"))
+            { 
+                <div class="PopUpContent">
+
+                        <div class="lc Label">
+                            <b>@M.Translation.Get("Korisničko ime"):</b>
+                        </div>
+                        <div class="rc">
+                            @Html.TextBox("username", "", new { @class = "FormTextbox floatLeft" })
+                        </div>
+
+                        <div class="lc Label">
+                            <b>@M.Translation.Get("Lozinka"):</b>
+                        </div>
+                        <div class="rc">
+                            @Html.Password("password", "", new { @class = "FormTextbox floatLeft" })
+                        </div>
+                        <div class="lc Label">
+                            <b>
+                                @M.Translation.Get("Zapamti lozinku")
+                            </b>
+                        </div>
+                        <div class="rc">
+                            @Html.CheckBox("cbRememberPassword", false, new { @class = "CheckBox floatLeft marginSmall" })
+                        </div>
+                            <br style="clear: left;" />
+    
+                </div>  
+   
+                <div class="PopUpFooter">
+                    <div class="floatRight ">
+                        <input type="hidden" name="button" value="submit" />
+                        <input type="submit" value="@M.Translation.Get("POTVRDI")" class="ButtonBlue roundedCornersMin floatRight" />
+                        <br style="clear: left;" />
+                    </div>
+                </div>
+
+
+        
+            }
+        </div>
+    </div>
+</div>
+

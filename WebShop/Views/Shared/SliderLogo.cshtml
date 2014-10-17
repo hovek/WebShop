@@ -1,0 +1,52 @@
+﻿@using WebShop.Models;
+@using S = Syrilium.Modules.BusinessObjects;
+@using WebShop.Infrastructure;
+<script type="text/javascript">
+    $(window).load(function () { $('.flexsliderLogo').flexslider({ pauseOnAction: 'true', controlNav: 'false', animation: 'show', animationDuration: 1000, slideshowSpeed: 9000, pauseOnHover: 'false' }); })
+</script>
+@model WebShop.Models.SliderLogo
+@{
+    int i = 0;
+    int picturesPerSlide = 3;
+    Model.Request = Request;
+}
+@if(Model.PartnerId == null)
+{
+<div class="LeftColumnControl">
+    <div class="ControlBoxWrapper roundedCornersSmall">
+        <div class="ControlBoxRightHeader">
+            <a href="@Url.Action("Index", "Partner")" class=""><span class="PartnerIcon"><span class="ControlBoxHeaderText"
+                style="color: #fff;">PARTNERI<span class="More floatRight"></span></span></span>
+            </a>
+        </div>
+    </div>
+    <div class="ArrowDownFirst">
+    </div>
+
+    <div class="SliderLogoWrapper">
+        <div class="flexsliderLogo roundedCornersSmall">
+            <div class="flex-direction-nav-container-Logo">
+                &nbsp;
+            </div>
+            <ul class="slides">
+                @foreach (S.Partner partner in Model.GetPartnerList())
+                {
+                    if (i % picturesPerSlide == 0)
+                    {
+                    @Html.Raw("<li>")
+                    }             
+                    <a href="@partner.URL" >
+                        <img src="@partner.Logo" alt="@partner.Name" class="SliderImages SliderImagesLogo roundedCornersSmall" onclick="" />
+                    </a>
+                
+                    if (((i + 1) % picturesPerSlide) == 0)
+                    {
+                    @Html.Raw("</li>")
+                    }
+                    i++;
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+}

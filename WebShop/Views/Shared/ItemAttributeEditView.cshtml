@@ -1,0 +1,64 @@
+﻿@using WebShop.Models
+@using WebShop.Infrastructure
+@using WebShop.BusinessObjectsInterface.Item
+@model ItemAttributeEditView
+
+@using (Html.BeginForm("EditItemAttribute", "Admin", FormMethod.Post, new { id = "EditItemAttributeForm" }))
+{
+    <input type="hidden" name="attributeDefinitionId" value="@Model.AttributeDefinitionId" />
+    
+    <div>
+        <div class="label floatLeft" style="width: 100px;"> @Translation.Get("Naziv")</div>
+        <input type="text" name="name" value="@Model.Name" class="Textbox" />
+    </div>
+    <div>
+       <div class="label floatLeft" style="width: 100px;">  @Translation.Get("Prikaz")</div>
+        <input type="text" name="display" value="@Model.Display" class="Textbox" />
+    </div>
+    <div>
+       <div class="label floatLeft" style="width: 100px;">  @Translation.Get("Format")</div>
+        <input type="text" name="format" value="@Model.Format" class="Textbox" />
+    </div>
+    <div>
+        <div class="label floatLeft" style="width: 100px;"> @Translation.Get("Tip podatka")</div>
+        @Html.ItemDropDown(
+            htmlAttributes: new { id="AttributeDefinitionDataType", @class = "DropDownList DropDownListSmall", name="dataType", onchange="javascript: OnDataTypeChange($(this).val());" },
+            loadSelectedValue: false,
+            items: Model.GetDataTypes(),
+            enabled: !Model.DataTypeChangeNotAllowed)
+    </div>
+      <br style="clear:left;" />
+    <div id="SystemListReferenceTypes"  @Html.Raw(Model.IsAttributeDataTypeSystemListReference?"":@"style=""display:none;""")>
+        <div class="label floatLeft" style="width: 100px;">  @Translation.Get("Tip veze")</div>
+         @Html.ItemDropDown(
+            htmlAttributes: new {id="SystemListReferenceType", @class = "DropDownList DropDownListSmall", name="systemListReferenceType" },
+            loadSelectedValue: false,
+            items: Model.GetReferenceTypes(),
+            enabled: !Model.DataTypeChangeNotAllowed)
+   </div>
+    <br style="clear:left;" />
+    <div id="CoordinatesDiv"  @Html.Raw(Model.AttributeDataType == AttributeDataTypeEnum.Coordinates?"":@"style=""display:none;""")>
+        <div>
+           <div class="label floatLeft" style="width: 100px;">  @Translation.Get("Naziv širine")</div>
+            <input type="text" name="latDisplay" class="Textbox" value="@Model.LatitudeDisplay" />
+        </div>
+        <div>
+          <div class="label floatLeft" style="width: 100px;">   @Translation.Get("Naziv dužine")</div>
+            <input type="text" name="lngDisplay" class="Textbox" value="@Model.LongitudeDisplay" />
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    function OnDataTypeChange(dataType) {
+        if (dataType == "@(((int)AttributeDataTypeEnum.Reference).ToString())") 
+            $('#SystemListReferenceTypes').show();
+        else 
+            $('#SystemListReferenceTypes').hide();
+
+        if(dataType == "@(((int)AttributeDataTypeEnum.Coordinates).ToString())")
+            $('#CoordinatesDiv').show();
+        else
+            $('#CoordinatesDiv').hide();
+    }
+</script>

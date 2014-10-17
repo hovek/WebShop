@@ -1,0 +1,30 @@
+﻿@model WebShop.Models.Home
+@using WebShop.Models
+@{
+    ViewBag.Title = Translation.Get("Ovrhe");  
+}
+
+
+@if (@Model.LeftMenu.IsLeftMenu)
+{
+
+    <div>
+        @section LeftMenu
+        {
+            @Html.Partial("LeftMenu", Model.LeftMenu)
+        }
+    </div>
+}
+<div class="MiddleColumnControl">
+    @Html.Partial("Wellcome")
+</div>
+<div class="MiddleColumnControl">
+    @Html.Partial("SearchBox", Model.SearchBox)
+</div>
+<div class="MiddleColumnControl">
+
+    @Html.Partial("SliderPremium", Model.SliderPremium)
+</div>
+<div class="MiddleColumnControl">
+    @Html.Partial("SliderLogoTest", ViewData["SliderLogo"] ?? new WebShop.Models.SliderLogo())
+</div>

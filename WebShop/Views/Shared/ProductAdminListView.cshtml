@@ -1,0 +1,77 @@
+﻿@using WebShop.Models
+@using WebShop.BusinessObjectsInterface.Item
+@model ProductAdminListView
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"<div id=""ProductAdminListViewContainer"">")
+}
+
+@using (Html.BeginForm("DeleteProduct", "Admin", FormMethod.Post, new { id = "DeleteProductForm" }))
+{
+    <input type="hidden" name="groupId" value="@Model.GroupId" />    
+    <input id="DeleteProductId" name="productId" type="hidden" />	
+}
+@using (Html.BeginForm("Product", "Admin", FormMethod.Get, new { id = "EditProductForm" }))
+{
+    <input type="hidden" name="gid" value="@Model.GroupId" />    
+    <input type="hidden" id="EditProductID" name="pid" />
+}
+@{
+    var grid = new WebGrid(Model.ProductViewItemList,
+                      defaultSort: "ItemId",
+                      canPage: true,
+                      rowsPerPage: 10);
+    grid.Pager(WebGridPagerModes.NextPrevious);
+        @grid.GetHtml(tableStyle: "WebGrid",
+                          headerStyle: "header",
+                          alternatingRowStyle: "alt",
+            columns: grid.Columns(
+                                    grid.Column("ItemId", "Id", canSort: true, format: @<span>@item.ItemId</span>),
+                                    grid.Column("ItemName", "Naziv predmeta", canSort: true, format: @<span>@item.ItemName</span>),
+                                    grid.Column("CreateDateTime", "Datum izrade", canSort: true, format: @<span>@item.CreateDateTime</span>),
+                                    grid.Column("EditDateTime", "Datum zadnje promjene", canSort: true, format: @<span>@item.EditDateTime</span>),
+                                    grid.Column("PersonCreated", "Izradio", canSort: true, format: @<span>@item.PersonCreated</span>),
+                                    grid.Column("Edit", "Uredi predmet", canSort: false, format: item => @Html.Raw(string.Concat(@"<input class=""floatLeft "" id=""EditP", item.ItemId, @""" type=""button"" value=""Edit"" onclick=""javascript:EditProduct(", item.ItemId, @");""/>"))),
+                                    grid.Column("Delete", "Obriši predmet", canSort: false, format: item => @Html.Raw(string.Concat(@"<input class=""floatLeft "" id=""DelP", item.ItemId, @""" type=""button"" value=""Del"" onclick=""javascript:DeleteProduct(", item.ItemId, ",'", item.ItemName, @"');"" />")))
+                                    //grid.Column("Add", "Dodaj novi predmet", canSort: false, format: item => @Html.Raw(string.Concat(@"<input class=""floatLeft ButtonBlue"" id=""AddP", item.ItemId, @""" type=""button"" value=""Dodaj"" onclick=""javascript:AddProduct(", item.ItemId, ",'", item.ItemName, @"');"" />")))
+                                                 ));  
+                                                                                                                             
+}
+
+<script type="text/javascript">
+    function EditProduct(productId) {
+        $("#EditProductID").attr('value', productId);
+        $("#EditProductForm").submit();
+    }
+
+    function AddProduct(productId) {
+        $("#AddProductID").attr('value', productId);
+        $("#AddProductForm").submit();
+    }
+
+    function DeleteProduct(id, productName) {
+        var btns = {};
+        btns['@Translation.Get("Da")'] = function () {
+            $('#DeleteProductId').attr('value', id);
+            AjaxSubmitForm($("#DeleteProductForm"), function (data) { $("#ProductAdminListViewContainer").html(data); });
+            $(this).dialog("close");
+        };
+        btns['@Translation.Get("Ne")'] = function () {
+            $(this).dialog("close");
+        };
+        $("#GroupDeleteDialog").html("@Translation.Get("Jeste li sigurni da želite obrisati") '" + productName + "'?");
+        $("#GroupDeleteDialog").dialog({
+            autoOpen: true,
+            title: '@Translation.Get("Brisanje")',
+            width: 'auto',
+            modal: true,
+	        buttons: btns
+	    });
+    }
+</script>
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"</div>")
+}

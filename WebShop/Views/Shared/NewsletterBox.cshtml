@@ -1,0 +1,42 @@
+﻿@using WebShop.Models
+
+<div class="RightColumnControl">
+    <div id="NewsletterBox">
+        @using (Ajax.BeginForm("Newsletter", "Newsletter", new AjaxOptions { UpdateTargetId = "NewsletterBox" }))
+        {
+            <div class="ControlBoxWrapper floatLeft roundedCornersSmallTop">
+                <div class="ControlBoxRightHeader">
+                    <a href="@Url.Action("Newsletter", "MyAccount")" class=""><span class="NewsLetterIcon"><span
+                        class="ControlBoxHeaderText" style="color: #fff;">@Translation.Get("NEWSLETTER")<span class="More floatRight"></span></span></span></a>
+                </div>
+                <div class="ControlBoxContent">
+                    <div class="paddingBig" style="width: 205px;">
+                        <div class="NewsletterContentWrapper">
+                            <span><b>@Translation.Get("Pratite nas putem newsletter-a")</b></span>
+                            <div class="NewsletterTextBoxWrapper">
+                                <div class="floatLeft">
+                                    @Html.TextBox("newsletterEmail", "", new { @class = "Textbox NewsletterTextBox roundedCornersMin" })
+                                </div>
+                                <div class=" floatLeft NewsletterButton">
+                                    <input type="submit" value="OK" class="ButtonBlue roundedCornersMin floatLeft" style="overflow: visible;" />
+                                </div>
+                            </div>
+                            <span class="Red fontSmall" style="display: block;"><b>@TempData["ValidationEmailFalse"]</b></span> <span
+                                class="Green fontSmall" style="display: block;"><b>@TempData["ValidationEmailTrue"]</b></span>
+
+                            <span class="fontSmall">*@Translation.Get("Upišite svoj email i automatski ćete biti prijavljeni na newsletter")</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('a#NewsletterLink').click(function () {
+            $('form#NewsletterForm').submit();
+        });
+    });
+</script>

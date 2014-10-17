@@ -1,0 +1,33 @@
+﻿@using WebShop.Infrastructure
+@using WebShop.Models
+
+<div class="LeftColumnControl">
+    <div class="ControlBoxWrapper roundedCornersSmall">
+        <div class="ControlBoxRightHeader">
+            <span class="ControlBoxHeaderText" style="color: #fff; margin-left: 15px;">@Translation.Get("MOJ PROFIL")</span>
+        </div>
+    </div>
+    <div class="ArrowDownFirst">
+    </div>
+    <div class="MyAccountMenu">
+        <div class="paddingBig">
+            <ul class="SquareList">
+                <li style="list-style: none;" class="MyProfileIcon"><b>
+                    @Html.MenuLink(Translation.Get("Moj profil"), "Index", "MyAccount", "Red", "")
+                </b></li>
+                <li class="EditMyProfileIcon"><b>
+                    @Html.MenuLink(Translation.Get("Uredi profil"), "EditMyProfile", "MyAccount", " Red", "")
+                </b></li>
+                <li class="MyNewslleterIcon"><b>
+                    @Html.MenuLink(Translation.Get("Newsletter"), "Newsletter", "MyAccount", "Red", "")
+                </b></li>
+                <li class="MySearch"><b>
+                    @Html.MenuLink(Translation.Get("Moja pretraživanja"), "MySearch", "MyAccount", "Red", "")
+                </b></li>
+                <li class="MyMessage"><b>
+                    @Html.MenuLink(Translation.Get("Moje poruke"), "MyMessage", "MyAccount", "Red", "")
+                </b></li>
+            </ul>
+        </div>
+    </div>
+</div>

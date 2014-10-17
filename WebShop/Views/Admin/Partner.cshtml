@@ -1,0 +1,130 @@
+﻿@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<div class="BoxWrapper">
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+        <br style="clear: left;" />
+    }
+    @using (Html.BeginForm("Partner", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "PartnerListForm" }))
+    {  
+        <span class="label">Popis partnera:</span>
+        @Html.DropDownList("partnerList", WebShop.Models.Partner.GetPartnerAdvertiserList(), "-- popis partnera i oglašivača -- ", new { @class = "PartnerList DropDownList floatLeft" })
+        <br style="clear: left;" />
+        <span class="label">Id partnera: </span>
+        @Html.TextBox("idPartner", ViewData["idPartner"], new { @class = "Textbox TextboxSmall", @readonly = true })
+       <br style="clear: left;" />
+        <span class="label">Prikaži: </span>
+   
+        @Html.CheckBox("showPartner", ViewData["showPartner"])
+        <br style="clear: left;" />
+        <span class="label">"Vendor" partner: </span>
+   
+        @Html.CheckBox("premium", ViewData["Premium"])
+  
+        <br style="clear: left;" />
+        <span class="label">Oglašivač: </span>
+   
+        @Html.CheckBox("advertiser", ViewData["Advertiser"])
+   
+        <br style="clear: left;" />
+        <span class="label">Ime:</span>
+        @Html.TextBox("name", ViewData["Name"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Grad:</span>
+        @Html.TextBox("city", ViewData["City"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Adresa:</span>
+        @Html.TextBox("address", ViewData["Address"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Poštanski broj:</span>
+        @Html.TextBox("postalCode", ViewData["PostalCode"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Telefon:</span>
+        @Html.TextBox("phone", ViewData["Phone"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Email:</span>
+        @Html.TextBox("email", ViewData["Email"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Url:</span>
+        @Html.TextBox("url", ViewData["Url"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+        <span class="label">Fax:</span>
+        @Html.TextBox("fax", ViewData["Fax"], new { @class = "Textbox TextboxBig" })
+        <br style="clear: left;" />
+       
+        <span class="label">Logo:</span>
+        <input type="file" name="fileLogo" id="fileLogo" class="fileUpload" size="100" />
+        <br style="clear: left;" />
+        if (ViewData["Logo"] != null)
+        { 
+        <span class="label">Slika Logo:</span> 
+        <div class="ImageNews floatLeft">
+            <img src="@ViewData["Logo"]" alt=""/>
+        </div>
+        }
+        <br style="clear: left;" />      
+        <span class="label">O partneru:</span>
+        @Html.TextArea("about", (string)ViewData["About"], new { @name = "EditorText" })
+        <br style="clear: left;" />        <br style="clear: left;" />
+        <span class="label">Opis posla:</span>
+        @Html.TextArea("workDescription", (string)ViewData["WorkDescription"], new { @name = "EditorText" })
+        <br style="clear: left;" />        <br style="clear: left;" />
+        <span class="label">Usluge:</span>
+        @Html.TextArea("services", (string)ViewData["Services"], new { @name = "EditorText" })
+        <br style="clear: left;" />        <br style="clear: left;" />
+      
+        <div class="floatLeft" style="margin-right: 10px;">
+            <span class="label">Pozadina:</span>
+            <input type="file" name="fileBackground" id="fileBackground" class="fileUpload" size="100" />
+        </div>
+        <div>
+            <br style="clear: left;" />
+            <span class="label">Html pozadina:</span>
+            @Html.TextArea("htmlBackground", (string)ViewData["HtmlBackground"], new { @class = "TextArea TextboxBig" })
+        </div>
+        if (ViewData["Background"] != null)
+        { 
+        <span class="label">Slika pozadine:</span> 
+        <div class="ImageNews floatLeft">
+            <img src="@ViewData["Background"]" width="250" height="200" alt=""/>
+        </div>
+        }
+        
+        <br style="clear: left;" />
+        
+        <div class="ButtonHolder">
+            <input type="submit" name="button" value="Save" class="ButtonBlue" />
+            <input type="submit" name="button" value="Delete" class="ButtonRed" />
+        </div>
+     
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#about').ckeditor();
+    });
+
+    $(document).ready(function () {
+        $('#workDescription').ckeditor();
+    });
+
+    $(document).ready(function () {
+        $('#services').ckeditor();
+    });
+
+    $(function () {
+        $('#partnerList option').click(function () {
+            $("#PartnerListForm").submit();
+        });
+
+        $('#partnerList').change(function () {
+            $("#PartnerListForm").submit();
+        });
+    });
+</script>

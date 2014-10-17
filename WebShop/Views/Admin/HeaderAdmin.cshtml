@@ -1,0 +1,49 @@
+﻿@using WebShop.Models
+@using WebShop
+@using WebShop.Infrastructure
+
+<div class="HeaderContent">
+    <div class="HeaderTop">
+        <div class="floatLeft">
+            @Html.ActionLink(Translation.Get("Povratak na stranicu"), "Index", "Home")
+            |
+         
+            @Html.ActionLink(Translation.Get("Logout"), "Logout", "Admin")
+        </div>
+        @if (SessionState.I.Login != null)
+        {   
+            <span class="floatRight" style="margin-right: 15px;"><em>@Translation.Get("Dobro došli")
+            </em>, <a href="@Url.Action("Index", "MyAccount")"><b class="Blue">
+                @Html.Raw(SessionState.I.User.Login.UserName) </b></a></span>
+        }
+
+
+    </div>
+    <div class="HeaderMiddle">
+             <div class="floatLeft">
+        <h1 style="width:100px;">@Translation.Get("ADMIN")</h1>
+                 </div>
+        <div class="floatRight">
+              @Html.Partial("LanguagePicker", new WebShop.Models.Language())
+        </div>
+    </div>
+    <div class="HeaderBottom">
+        @Html.Partial("Menu")
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function (e) {
+        $("#LanguagePicker").msDropDown();
+    });
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $('#LanguagePicker_child > a').click(function () {
+            $("#LanguagePickerForm").submit();
+        });
+    });
+</script>

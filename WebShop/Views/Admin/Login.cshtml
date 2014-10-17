@@ -1,0 +1,36 @@
+﻿@model WebShop.Models.Login
+
+@{
+    Layout = null;
+    <link href="@Url.Content("~/Content/Admin.css")" rel="stylesheet" type="text/css" />
+}
+<html>
+<head>
+    <title>Admin login</title>
+</head>
+<body>
+    <div>
+    <div class="LoginWrapper">
+        <div class="LoginFormWrapper">
+          @using (Html.BeginForm("LoginAttempt", "Admin", FormMethod.Post))
+           {
+              <input type="hidden" value="@Model.ReturnUrl" name="returnUrl" />
+            <div class="floatLeft" style="margin-right: 10px;">
+                <span class="LoginLabel">Korisničko ime:</span>
+                @Html.TextBox("username", "", new { @class = "Textbox LoginTextbox" })
+            </div>
+            <div class="floatLeft" style="margin-right: 10px;">
+                <span class="LoginLabel">Lozinka:</span>
+                @Html.Password("password", "", new { @class = "Textbox LoginTextbox" })
+            </div>
+            <input type="submit" name="button" value="Prijava" class="ButtonBlue floatLeft" />
+           }
+            <br style="clear:left;" />
+            <span style="color:red; margin-top:20px; display:block;"><strong>@Model.ErrorMessage</strong></span>
+          
+        </div>
+
+    </div>
+    </div>
+</body>
+</html>

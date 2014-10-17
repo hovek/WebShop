@@ -1,0 +1,48 @@
+﻿@using WebShop.Models;
+@using WebShop.Infrastructure;
+
+@model Slider
+
+@if (Model.Pictures.Count == 0) { return; }
+    
+<div class="Carousel roundedCornersBig">
+    <div class="MainPhotoWrapper">
+        <span id="MainPhoto" class="MainPhoto roundedCornersBig" style="cursor:pointer; background:center center no-repeat; display:block; width:278px; height:230px;" onclick=""></span>
+   </div>
+    <div class="flexslider">
+        <div class="flex-direction-nav-container">
+            &nbsp;</div>
+        <ul class="slides">
+           @{int i = 0;}
+           @foreach (string path in Model.Pictures)
+           {
+                if (i % Model.PicturesPerSlide == 0)
+                {
+                    @Html.Raw("<li>")
+                }
+                                
+                <a id="SliderImageLink@(i)" href="@CommonHelpers.GetProductImagePath("Original", path)" rel="Images" style="display:none;"></a>
+                <span class="SliderImages roundedCornersSmall" style="cursor:pointer; display:inline-block; background:url('@CommonHelpers.GetProductImagePath("W90H60", path)') center center no-repeat; width:90px; height:60px;" onclick="javascript: openNewSliderImage('@CommonHelpers.GetProductImagePath("W278H230", path)', 'SliderImageLink@(i)');"></span>
+               
+                if (((i + 1) % Model.PicturesPerSlide) == 0)
+                {
+                    @Html.Raw("</li>")
+                }
+                i++;
+           }
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.flexslider').flexslider({ pauseOnAction: 'true', controlNav: 'false', slideDirection: 'vertical', animation: 'show', animationDuration: 1000, slideshowSpeed: 5000000, pauseOnHover: 'false' });
+        $("a[rel='Images']").colorbox({ maxWidth: 1000, maxHeight: 750, scalePhotos: true });
+        openNewSliderImage('@CommonHelpers.GetProductImagePath("W278H230",Model.Pictures[0])', 'SliderImageLink0');
+    });
+
+    function openNewSliderImage(src, smallImageLinkId) {
+        $('#MainPhoto').css('background-image', "url('" + src + "')");
+        $('#MainPhoto').attr('onclick', "javascript: $('#" + smallImageLinkId + "').click();");
+    }
+</script>

@@ -1,0 +1,10 @@
+﻿@using WebShop.Models;
+@using (Html.BeginForm("FullTextSearch", "Home"))
+{
+	<div class="SearchContainer">
+		<div class="SearchWrapper roundedCornersSmall">
+			@Html.TextBox("Text", (string)ViewBag.FTS.Text, new { @class = "FullTextSearchTextbox floatLeft" })
+			<input id="main_search_button" class="FullTextSearchButton" type="submit" value="Search" />
+		</div>
+	</div>                                                                                 
+}

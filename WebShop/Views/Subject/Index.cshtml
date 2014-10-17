@@ -1,0 +1,51 @@
+﻿@model WebShop.Models.Subject
+@using M = WebShop.Models;
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<div class="DestinationPath">
+    <h1 class="floatLeft"  style="margin-bottom:10px;">
+        @Model.Name</h1>
+    <div class="floatLeft">
+        @Html.Partial("Stars",Model.Stars)
+    </div>
+    <br style="clear:left;" />
+     @Html.Partial("FacebookLikeButton")
+     
+</div>
+  <br style="clear:left;" />
+@Html.Partial("Slider", Model.Slider)
+<div class="SubjectMainWrapper floatLeft">
+    <div class="dividerBig">
+    </div>
+    @Html.Partial("Descriptions", Model.Descriptions)
+    <div class="dividerBig">
+    </div>
+    <div class="floatLeft" style="margin-bottom:10px;">
+        <div style="width: 245px;" class="floatLeft">
+            @Html.Partial("PriceBox", Model.PriceBox)
+        </div>
+        <div class="dividerBig floatLeft">
+        </div>
+        <div style="width: 245px;" class="floatLeft">
+            @Html.Partial("NewsletterCheckIn", Model)
+        </div>
+ 
+    </div>
+
+    <div class="floatLeft" >
+        <div style="width: 245px;" class="floatLeft">
+            @Html.Partial("CountDown", Model.CountDown)
+        </div>
+        <div class="dividerBig floatLeft">
+        </div>
+        <div style="width: 245px;" class="floatLeft">
+            @Html.Partial("GoogleMap", Model.GoogleMap)
+        </div>
+    <div class="dividerBig floatLeft">
+        </div>
+    </div>
+</div>
+
+@Html.Partial("ContactPartner", Model.ContactPartner)

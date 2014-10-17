@@ -1,0 +1,100 @@
+﻿@model WebShop.Models.Newsletter
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<div class="BoxWrapper">
+   
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+         <br style="clear:left;"/>
+    }
+    @using (Html.BeginForm("Newsletter", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "NewsletterForm" }))
+    {
+        <div class="ControlWrapper floatLeft">
+            <span class="label">Id:</span>
+            @Html.TextBox("newslleterMailId", Model.NewsletterMailId, new { @class = "Textbox TextboxSmall ReadonlyTextbox", @readonly = true })
+            <br style="clear:left;" />
+            <span class="label">Subject:</span>
+            @Html.TextBox("subject", Model.Subject, new { @class = "Textbox TextboxBig" })
+            <br style="clear:left;" />
+            <div class="ControlWrapper">
+                <span class="label">Content: </span>
+                @Html.TextArea("content", Model.Content, new { @name = "EditorText" })
+            </div>
+        </div>
+        <br style="clear:left;" />
+        <div class="ButtonHolder">
+            <input type="submit" name="button" value="Save" class="ButtonBlue" />
+        </div>
+       
+         
+    }
+    <br clear="left" />
+    @{
+        var grid = new WebGrid(Model.NewsletterMail,
+                          defaultSort: "DateCreated",
+                          canPage: true,
+                          rowsPerPage: 10);
+        grid.Pager(WebGridPagerModes.NextPrevious);
+        @grid.GetHtml(tableStyle: "WebGrid",
+                          headerStyle: "header",
+                          alternatingRowStyle: "alt",
+            columns: grid.Columns(
+                                    grid.Column("Id", "Id", canSort: true, format: @<b>@item.Id</b>),
+                                    grid.Column("Subject", "Subject", canSort: true, format: @<b>@item.Subject</b>),
+                                    grid.Column("DateCreated", "DateCreated", canSort: true, format: @<b>@item.DateCreated.ToShortDateString()</b>),
+                                  //  grid.Column("Newsletter lista", "Newsletter lista", canSort: true, format: @<text> @Html.DropDownList("newsletterMailingListId", WebShop.Models.Newsletter.NewsletterMailingList(), "-- popis newsletter listi -- ", new { @class = "DropDownList DropDownListSmall floatLeft" })</text>),
+                                    grid.Column("Edit", "Edit", canSort: false, format: item => Html.ActionLink("Edit", "Newsletter", "Admin", new { @newslleterMailId = item.Id }, null)),
+                                    grid.Column("View", "View", canSort: false, format: item => Html.ActionLink("View", "Newsletter", "Admin", new { @newslleterMailId = item.Id, @button = "View" }, new { @class = "ViewNewsletter" })),
+                                    grid.Column("Delete", "Delete", canSort: false, format: item => @Html.ActionLink("Delete", "Newsletter", "Admin", new { @button = "Delete", @newslleterMailId = item.Id }, null)),
+                                    grid.Column("Send", "Send", canSort: false, format: item => @Html.ActionLink("Send", "Newsletter", "Admin", new { @button = "Send", @newslleterMailId = item.Id} , new { @class = "SendNewsletter" }))
+                                                 ));
+      
+                                                                                  
+    }
+       <br style="clear:left;"/>
+    <div id="ViewNewsletter" style="display: none; left: -10000px;">
+        @Html.Partial("NewsletterView")
+    </div>
+
+      <div id="SendNewsletter" style="display: none; left: -10000px;">
+        @Html.Partial("NewsletterSend")
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('.ViewNewsletter').click(function () {
+            $.get(this.href, function (data) {
+                $.modal(data, {
+                    containerId: 'result'
+                });
+            });
+            return false;
+        });
+    });
+
+</script>
+
+<script type="text/javascript">
+    $(function () {
+        $('.SendNewsletter').click(function () {
+            $.get(this.href, function (data) {
+                $.modal(data, {
+                    containerId: 'result'
+                });
+            });
+            return false;
+        });
+    });
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#content').ckeditor();
+    });
+</script>

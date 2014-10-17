@@ -1,0 +1,38 @@
+﻿@using WebShop.Models
+@using WebShop.BusinessObjectsInterface.Item
+@model AttributeTemplateConstraintEdit
+
+@using (Html.BeginForm("AttributeTemplateConstraintEdit", "Admin", FormMethod.Post, new { id = "AttributeTemplateConstraintEditForm" }))
+{
+    <input type="hidden" name="languageId" value="@Model.LanguageId" />
+    <input type="hidden" name="templateId" value="@Model.TemplateId" />
+    <input type="hidden" name="templateElementId" value="@Model.TemplateElementId" />
+    <input type="hidden" id="ConstraintAttributeDefinitionId" name="attributeDefinitionId" value="@Model.AttributeDefinitionId" />
+}
+
+@if (Model.Constraints.Count > 0)
+{
+    <div>
+        <fieldset>
+            <legend>@Translation.Get("Ograničenja")</legend>
+            <div id="AttributeTemplateConstraintEditInputs">
+                @foreach (var i in Model.Constraints)
+                {
+                    if (i.Key == ItemDefinitionDataTypeEnum.AttributeTemplateConstraintForeignKeyAttribute)
+                    {
+                        @Translation.Get("Po atributu")
+                        @Html.DropDownList(string.Concat("cns_", (int)i.Key), (IEnumerable<SelectListItem>)i.Value, new { onchange="javascript: SelectOption(this);" });
+                    }
+                }
+            </div>
+        </fieldset>
+    </div>
+}
+
+<script type="text/javascript">
+    function SelectOption(select) {
+        var value = $(select).val();
+        $(select).find('option[selected]').removeAttr('selected');
+        $(select).find("option[value='" + value+ "']").attr('selected','selected');
+    }
+</script>

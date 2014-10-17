@@ -1,0 +1,13 @@
+﻿@using WebShop.Models
+@{
+    ViewBag.Title = Translation.Get("Kontakt");  
+}
+<div>
+    <h2>
+       @Translation.Get("KONTAKT")
+    </h2>
+    <p>
+        @Translation.Get("Ukoliko nas želite kontaktirati, molimo Vas da to učinite putem kontakt forme. Odgovorit ćemo Vam u najkraćem mogućem roku.")
+    </p>
+    @Html.Partial("ContactForm")
+</div>

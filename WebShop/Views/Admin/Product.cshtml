@@ -1,0 +1,325 @@
+﻿@using WebShop.Models
+@using WebShop.BusinessObjectsInterface.Item
+@using WebShop.Infrastructure
+@model Product
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+    ViewBag.ImageIndex = -1;
+}
+
+<script type="text/javascript">
+    var uploadByUser = false;
+
+    function UploadImage_Complete(attrId, formId, uploadTargetId, imagesId) {
+        if (!uploadByUser) return;
+
+        uploadByUser = false;
+
+        //Reset the image form so the file won't get uploaded again
+        document.getElementById(formId).reset();
+
+        //Grab the content of the textarea we named jsonResult .  This shold be loaded into 
+        //the hidden iFrame.
+        var newImg = document.getElementById(uploadTargetId).contentDocument.getElementsByTagName('body')[0].childNodes[0].textContent;
+        //Create a new image and insert it into the Images div.  Just to be fancy, 
+        //we're going to use a "FadeIn" effect from jQuery
+        var imgDiv = document.getElementById(imagesId);
+
+        var div = document.createElement('div');
+        imageIndex++;
+        var divImageId = attrId + "_ImageDiv_" + imageIndex;
+        div.id = divImageId;
+        div.style.cssFloat = div.style.styleFloat = "left"
+        var divDeleteId = attrId + "_DivDel_" + imageIndex;
+        div.onmouseover = function () {
+            document.getElementById(divDeleteId).style.display = 'block';
+        };
+        div.onmouseout = function () {
+            document.getElementById(divDeleteId).style.display = 'none';
+        };
+        imgDiv.appendChild(div);
+
+        var divImage = document.createElement('div');
+        div.appendChild(divImage);
+
+        var divDelete = document.createElement('div');
+        divDelete.id = divDeleteId;
+        divDelete.className = "DeleteImage";
+        //divDelete.style.position = "absolute";
+        //divDelete.innerText = "X";
+        //divDelete.style.background = "red";
+        //divDelete.style.cursor = "pointer";
+        divDelete.onclick = function () {
+            var imageDiv = document.getElementById(divImageId);
+            imageDiv.parentElement.removeChild(imageDiv);
+        };
+        divDelete.style.display = "none";
+        divImage.appendChild(divDelete);
+
+        var img = new Image();
+        img.id = attrId + "_Image_" + imageIndex;
+        img.style.width = "auto";
+        img.style.height = "75px";
+        img.style.padding = "3px";
+        img.src = "/Resources/Upload/Temp/Product/W90H60/" + newImg;
+
+        //Hide the image before adding to the DOM
+        $(img).hide();
+        divImage.appendChild(img);
+        //Now fade the image in
+
+        var imgInput = document.createElement('input');
+        imgInput.id = attrId + "_ImageInput_" + imageIndex;
+        imgInput.name = attrId;
+        imgInput.value = newImg;
+        imgInput.type = "hidden";
+        div.appendChild(imgInput);
+
+        $(img).fadeIn(500, null);
+    }
+</script>
+
+<div class="BoxWrapper">
+    <div id="map_canvas" style="width: 800px; height: 600px; display: none;"></div>
+
+    @using (Html.BeginForm("Product", "Admin", FormMethod.Get, new { id = "ProductForm" }))
+    {
+        <input type="hidden" name="gid" value="@Model.GroupId" />    
+        <input id="Command" type="hidden" name="command" value="cancel" />
+    }
+
+    @using (Html.BeginForm("SaveProduct", "Admin", FormMethod.Post, new { id = "SaveProductForm" }))
+    {
+        <input type="hidden" name="pid" value="@Model.ProductId" />
+        <input type="hidden" name="gid" value="@Model.GroupId" />    
+             
+        <div class="ControlDescriptionWrapper">
+
+            @if (Model.AttributeTemplate != null)
+            {
+                @generateAttributeGroups(Model.AttributeTemplate.GetSortedAttributesAndGroups())
+            }
+
+        </div>
+        <br style="clear: left;" />
+    }
+    <div style="margin-top: 20px;">
+        <input id="Save" form="SaveProductForm" type="submit" value="@Translation.Get("Spremi")" class="ButtonBlue" />
+        <input type="submit" form="ProductForm" value="@Translation.Get("Odustani")" class="ButtonRed"/>
+    </div>
+</div>
+@generateImageUploadElements()
+@ItemHelpers.GetDropDownListReferenceUpdateForms(Html.ViewContext.RequestContext, Model.AttributeTemplate)
+
+
+
+@* ISPOD SU HELPERI I JAVASCRIPT *@
+@helper generateImageUploadElements()
+{
+    foreach (IAttributeTemplateAttribute attr in Model.GetAllImageTemplateAttributes())
+    {
+        string attrId = string.Concat(attr.Attribute.Id);
+        string formId = string.Concat(attrId, "_Form");
+        string uploadTargetId = string.Concat(attrId, "_UploadTarget");
+
+        using (Html.BeginForm("UploadFile", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = @formId, target = @uploadTargetId }))
+        {
+    <input type="file" name="file" id="@string.Concat(attr.Attribute.Id, "_UploadImage")" onchange="javascript:uploadByUser=true; $('#@formId').submit();" style="display:none;"/>
+        }
+    <iframe id="@uploadTargetId" name="@uploadTargetId" onload="javascript:UploadImage_Complete('@attrId','@formId', '@uploadTargetId','@string.Concat(attr.Attribute.Id, "_Images")');" style="position: absolute; left: -999em; top: -999em;display:none;"></iframe>
+    }
+}
+
+@helper generateAttributeGroups(IList<dynamic> attributeAndGroups)
+{    
+    @Html.Raw("<ul class=\"\" style=\"border:1px solid #ccc; list-style:none; padding:10px;\">")
+    foreach (dynamic templateElement in attributeAndGroups)
+    {
+        if (templateElement is IAttributeTemplateAttribute)
+        {
+            IAttributeTemplateAttribute attr = templateElement;
+    <li>
+        <span style="width: 100%; float: left;">
+            @generateControl(attr)
+        </span>
+    </li>
+    <br style="clear: left;" />
+        }
+        else if (templateElement is IAttributeTemplateAttributeGroup)
+        {
+            IAttributeTemplateAttributeGroup group = templateElement;     
+    <li style="">
+        <span style="width: 100%; float: left; margin: 10px">
+            <h2>@group.GetAnyDisplayValue()</h2>
+        </span>
+        @generateAttributeGroups(group.GetSortedAttributesAndGroups())
+    </li>
+        }
+    }
+    @Html.Raw("</ul>")    
+    <br style="clear: left;" /> 
+}
+
+@helper generateControl(IAttributeTemplateAttribute attr)
+{   
+    if (attr.Attribute.DataType == AttributeDataTypeEnum.Coordinates)
+    {
+    @GenerateCoordinatesControls(attr.Attribute);
+    }
+    else
+    {
+        string name = attr.Attribute.Id.ToString();
+        IItemAttribute itemAttribute = Model.ProductObject == null ? null : Model.ProductObject.GetItemAttribute(attr.Attribute.Id);
+        dynamic itemValue = itemAttribute == null ? null : itemAttribute.GetRawValue();
+                      
+    <div class="label floatLeft" style="width: 170px;">@attr.Attribute.GetNameValue()</div>
+    <div class="floatLeft">
+        @if (attr.Attribute.DataType == AttributeDataTypeEnum.Int)
+        {
+            <input type="number" name="@name" value="@itemValue" class="Textbox NumberInput" />
+        }
+        else if (attr.Attribute.DataType == AttributeDataTypeEnum.String)
+        {
+            <input type="text" name="@name" value="@itemValue" class="Textbox"/>
+        }
+        else if (attr.Attribute.DataType == AttributeDataTypeEnum.Decimal)
+        {
+            <input type="text" name="@name" value="@itemValue" class="Textbox DecimalTextbox DecimalInput"/>
+        }
+        else if (attr.Attribute.DataType == AttributeDataTypeEnum.Bool)
+        {
+            bool isChecked = Convert.ToBoolean(itemValue ?? 0);
+            @Html.ItemCheckBox(attr.Attribute, sendFalseValue: true, isChecked: isChecked, loadSelectedValue: false)
+        }
+        else if (attr.Attribute.DataType == AttributeDataTypeEnum.DateTime)
+        {
+            <input type="datetime" name="@name" value="@itemValue" class="Textbox datepicker"/>
+        }
+        else if (attr.Attribute.DataType == AttributeDataTypeEnum.Reference)
+        {
+            @Html.ItemDropDownListReference(attr.Attribute, Model.AttributeTemplate, Model.ProductObject, new { @class = "DropDownList DropDownListSmall" }, string.Concat("-- ", Translation.Get("Odaberite"), " --"),
+                    loadSelectedValue: false)
+        }
+        else if (attr.Attribute.DataType == AttributeDataTypeEnum.Image)
+        {
+            <input type="button" value="Dodaj sliku" onclick="@Html.Raw(string.Concat("javascript:$('#", attr.Attribute.Id, "_UploadImage').click()"))" />
+            <div id="@string.Concat(attr.Attribute.Id, "_Images")">
+                @if (itemAttribute != null)
+                {
+                    string imageId = attr.Attribute.Id.ToString();
+                    foreach (dynamic value in itemAttribute.GetRawValues())
+                    {
+                        ViewBag.ImageIndex++;
+
+                        string divImageId = string.Concat(imageId, "_ImageDiv_", ViewBag.ImageIndex);
+                        string divDeleteId = string.Concat(imageId, "_DivDel_", ViewBag.ImageIndex);
+                    <div id="@divImageId" onmouseover="javascript:document.getElementById('@divDeleteId').style.display = 'block';" onmouseout="javascript:document.getElementById('@divDeleteId').style.display = 'none';" style="float:left;">
+                        <div>
+                            <div id="@divDeleteId" class="DeleteImage" style="display:none;" onclick="javascript:var imageDiv = document.getElementById('@divImageId'); imageDiv.parentElement.removeChild(imageDiv);">
+                            </div>
+                            <img alt="" id="@string.Concat(imageId, "_Image_", ViewBag.ImageIndex)" style="width:auto;height:75px;padding:3px;" src="@CommonHelpers.GetProductImagePath("W90H60", value)" />
+                        </div>
+                        <input id="@string.Concat(imageId, "_ImageInput_", ViewBag.ImageIndex)" name="@imageId" type="hidden" value="@value" />
+                    </div>                
+                    }
+                }
+            </div>
+        }
+    </div>
+    }
+}
+
+@helper GenerateCoordinatesControls(IAttributeDefinition attr)
+{
+    IAttributeDefinition attrLat = @attr.Attributes[AttributeKeyEnum.Latitude];
+    IAttributeDefinition attrLng = @attr.Attributes[AttributeKeyEnum.Longitude];
+
+    
+    <div style="width: 100%; margin: 10px 0px; border: 1px solid #ccc;">
+        <div style="margin: 10px;">
+            <h2>@attr.GetNameValue().ToUpper()</h2>
+        </div>
+        <div style="list-style: none; padding: 10px;">
+            <div class="label floatLeft" style="width: 170px; clear: left;">Pretraži po karti</div>
+            <div style="float: left;">
+                <input type="button" value="Karta" class="GoogleMapButton" onclick="javascript: ShowMap(@attrLat.Id, @attrLng.Id);"/>
+            </div>
+
+            <br />
+            <div class="label floatLeft" style="width: 170px; clear: left;">@attrLat.GetDisplayValue()</div>
+            <div class="floatLeft">
+                <input type="text" class="Textbox DecimalInput" id="@attrLat.Id" name="@attrLat.Id" value="@(Model.ProductObject == null ? "" : Model.ProductObject.GetRawValue(attrLat.Id))" />
+            </div>
+
+            <br />
+            <div class="label floatLeft" style="width: 170px; clear: left;">@attrLng.GetDisplayValue()</div>
+            <div class="floatLeft">
+                <input type="text" class="Textbox DecimalInput" id="@attrLng.Id" name="@attrLng.Id" value="@(Model.ProductObject == null ? "" : Model.ProductObject.GetRawValue(attrLng.Id))" />
+            </div>
+            <br style="clear: left;" />
+        </div>
+
+    </div>
+}
+
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyA7bndKkXEM5pLt4LUFO45f66eJH_m55TM&sensor=false"></script>
+<script type="text/javascript">
+    var marker;
+
+    function ShowMap(latId, lngId){
+        $("#map_canvas").dialog({
+            autoOpen:true,
+            modal:true,
+            height: 600,
+            width: 800,
+            resizeStop: function(event, ui) {google.maps.event.trigger(map, 'resize')  },
+            //open: function(event, ui) {google.maps.event.trigger(map, 'resize'); },
+            title: '@Translation.Get("Odabir koordinata")'
+        });
+
+        var lat = $('#'+latId).val().trim().replace(',','.');
+        var lng = $('#'+lngId).val().trim().replace(',','.');
+        var showMarker = true;
+        if(lat.length == 0) {
+            lat = 45.812670;
+            showMarker = false;
+        }
+        if(lng.length == 0) lng = 15.977843;
+
+        var mapOptions = {
+            center: new google.maps.LatLng(lat, lng),
+            zoom: 16,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+
+        if(showMarker){
+            var latlng = new google.maps.LatLng(lat, lng);
+            marker = new google.maps.Marker({ position: latlng, map: map });
+        }
+
+        google.maps.event.addListener(map, 'click', function (event) {
+            if (marker) marker.setMap(null);
+            marker = new google.maps.Marker({ position: event.latLng, map: map });
+            $('#'+latId).attr('value', event.latLng.lat());
+            $('#'+lngId).attr('value', event.latLng.lng());
+        });
+    }
+</script>
+
+<script type="text/javascript" src="~/Scripts/jquery-syrilium.js"></script>
+
+<script type="text/javascript">
+    $(".DecimalInput").DecimalInput();
+    $(".NumberInput").NumberInput();
+
+    var imageIndex = @string.Concat(ViewBag.ImageIndex, ";")
+
+    @ItemHelpers.GetRefreshDropDownListReferenceJSF()
+    @CommonHelpers.GetAjaxSubmitFormJSF()
+</script>
+
+

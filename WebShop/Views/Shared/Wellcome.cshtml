@@ -1,0 +1,35 @@
+﻿@using WebShop.Infrastructure
+@using WebShop.Models
+
+<script type="text/javascript">
+    $(document).ready(function () { $('.expandable').expandableContent({ collapsedHeight: 100  }); });
+</script>
+<div class="WellcomeContent" id="WellcomeContent">
+    <div class="expandable">
+        <div class="HeaderWellcome">
+            <div class="WellcomeTitle floatLeft">
+                <h2 style="margin: 0px;">
+                    @Translation.Get("Dobro došli na OVRHE.HR")!!
+                </h2>
+            </div>
+            <div class="HideControl floatLeft">@Html.ImageHider("HideControl", "WellcomeContent", "/Resources/Images/CloseIcon.png", "a", "CloseIcone", "", "20", "20")
+            </div>
+        </div>
+        <p>
+            @Translation.Get("Web portal ovrhe.hr jedinstveno je mjesto spajanja ponude i potražnje predmeta ovršnih i stečajnih postupaka, " +  
+                "javnih licitacija i predmeta zapljene. Naš cilj je na jednom mjestu objediniti sve nekretnine i pokretnine koje su predmet " + 
+                "prodaje u navedenim postupcima te time pružiti ne samo sve potrebne informacije potencijalnim kupcima već i pomoći prodavateljima " +
+                "da stvore širu bazu potencijalnih kupaca.")</p>
+        <p>
+            @Translation.Get("Ovrhe.hr na jednostavan, pregledan i efikasan način omogućavaju svim korisnicima "+
+            "da na jednom mjestu pristupe cijelokupnoj ponudi predmeta, usporede cijene onih " +
+            "koji ih zanimaju te da u direktnom kontaktu sa prodavateljima saznaju sve što im " +
+            "je potrebno za uspiješnu kupovinu. Prodavateljima nudimo i dodatnu priliku da na " +
+            "jednostavan način, jeftino i efikasno, oglase nekretnine i pokretnine u svome posjedu " +
+            "te da si time osiguraju znatno širu bazu zaniteresiranih kupaca.")</p>
+        <p>
+            @Translation.Get("Vizija našeg portala je postati centralni uređeni servis za javnu prodaju u Republici " +
+            "Hrvatskoj i mjesto koje će pomoći svim stranama u laganijem i bržem riješavanju " +
+            "predmeta postupaka stečaja, ovrha, zapljena i javnih licitacija.")</p>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+﻿@model WebShop.Models.Newsletter
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<div class=" BoxWrapper">
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+        <br style="clear: left;" />
+    }
+    @using (Html.BeginForm("NewsletterList", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "NewsletterListForm" }))
+    { 
+        <fieldset>
+            <legend>Dodavanje lista</legend>
+            <span class="label">Newsletter liste:</span>
+            @Html.DropDownList("newsletterMailingListId", WebShop.Models.Newsletter.NewsletterMailingList(), "-- popis newsletter listi -- ", new { @class = "DropDownList floatLeft DropDownListSmall" })
+            <br style="clear: left;" />
+            <span class="label">Ime liste:</span>
+            @Html.TextBox("nameNewsletterList", @Model.NewsletterMailingListName, new { @class = "Textbox" })
+            <br style="clear: left;" />
+            <div class="ButtonHolder">
+                <input type="submit" name="button" value="Save" class="ButtonBlue" />
+                <input type="submit" name="button" value="Delete" class="ButtonRed" />
+            </div>
+
+        </fieldset>
+    }
+    @using (Html.BeginForm("NewsletterMailingListSubscriber", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "NewsletterMailingListSubscriber" }))
+    { 
+        <fieldset>
+            <legend>Dodavanje osoba na listu</legend>
+            <span class="label">Newsletter liste:</span>
+            @Html.DropDownList("newsletterListId", WebShop.Models.Newsletter.NewsletterMailingList(), "-- popis newsletter listi -- ", new { @class = "DropDownList floatLeft DropDownListSmall" })
+            <br style="clear: left;" />
+            <span class="label">Email osobe:</span>
+            @Html.TextBox("emailSubscriber", "", new { @class = "Textbox" })
+            <br style="clear: left;" />
+            <div class="ButtonHolder">
+                <input type="submit" name="button" value="Save" class="ButtonBlue" />
+            </div>
+        </fieldset>
+    }
+    <br style="clear: left;" />
+    <br style="clear: left;" />
+    @{
+        var grid = new WebGrid(Model.NewsletterMailingListSubscriber,
+                          defaultSort: "DateCreated",
+                          canPage: true,
+                          rowsPerPage: 10);
+        grid.Pager(WebGridPagerModes.NextPrevious);
+        @grid.GetHtml(tableStyle: "WebGrid",
+                          headerStyle: "header",
+                          alternatingRowStyle: "alt",
+            columns: grid.Columns(
+                                    grid.Column("Id", "Id", canSort: true, format: @<b>@item.Id</b>),
+                                    grid.Column("Email", "Email", canSort: true, format: @<b>@item.Email</b>),
+                                    grid.Column("Newsletter liste", "Newsletter lista", canSort: true, format: @<b>@item.NewsletterMailingList.Name</b>)
+
+                                                             ));
+      
+                                                                                  
+    }
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#newsletterMailingListId option').click(function () {
+            $("#NewsletterListForm").submit();
+        });
+    });
+    $(function () {
+        $('#newsletterListId option').click(function () {
+            $("#NewsletterMailingListSubscriber").submit();
+        });
+    });
+</script>
+

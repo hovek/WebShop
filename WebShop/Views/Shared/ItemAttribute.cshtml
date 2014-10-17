@@ -1,0 +1,144 @@
+﻿@using WebShop.BusinessObjectsInterface.Item
+@using WebShop.Models
+@model ItemAttribute
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"<div id=""ItemAttributeContainer"">")
+}
+
+@using (Html.BeginForm("DeleteItemAttribute", "Admin", FormMethod.Post, new { id = "DeleteItemAttributeForm" }))
+{
+    <input id="DeleteItemAttributeIdInput" name="attributeDefinitionId" type="hidden" />	
+}
+
+@using (Html.BeginForm("ItemAttributeEditView", "Admin", FormMethod.Post, new { id = "ItemAttributeEditViewForm" }))
+{
+    <input id="ItemAttributeEditViewIdInput" name="attributeDefinitionId" type="hidden" />	
+}
+
+<fieldset>
+    <legend>ATRIBUTI</legend>
+    <input type="button" value="@Translation.Get("Dodaj")" onclick="javascript: EditAttribute('add');"/>
+    <div id="ItemAttributeTreeView">
+        <ul class="filetree">
+            @foreach (IAttributeDefinition attDef in ItemAttribute.GetAttributeDefinitions())
+            {
+                <li id="@string.Concat("attrDef_", @attDef.Id)">
+                    <a href="#" class="ItemAttribute">
+                        @(attDef.GetNameValue())
+                        <br />
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</fieldset>
+
+<script type="text/javascript">
+    $("a.ItemAttribute").click(function (event) {
+        event.preventDefault();
+    });
+
+    $(function () {
+        $("#ItemAttributeTreeView")
+            .bind("loaded.jstree", function (event, data) { jQuery.jstree._reference($("#ItemAttributeTreeView")).open_all(-1, false); })
+            .jstree({
+                "core": {
+                    "animation": 100
+                },
+                "themes": {
+                    "icons": false
+                },
+                "contextmenu": {
+                    "items": {
+                        "create": null,
+                        "rename": null,
+                        "remove": null,
+                        "ccp": null,
+                        "edit": {
+                            "label": "@(Translation.Get("Uredi"))",
+                            "action": function (obj) { EditAttribute('edit', obj); }
+                        },
+                        "delete": {
+                            "label": "@(Translation.Get("Obriši"))",
+                            "action": function (obj) { DeleteAttribute(obj); },
+                        }
+                    }
+                },
+                "plugins": ["themes", "html_data", "contextmenu"]
+            });
+    });
+
+        function DeleteAttribute(obj) {
+            var id = $(obj).attr('id').replace('attrDef_', '');
+            var name = $(obj).find('a').first().text().trim();
+
+            var btns = {};
+            btns['@Translation.Get("Da")'] = function () {
+                $('#DeleteItemAttributeIdInput').attr('value', id);
+
+                AjaxSubmitForm(
+                    $("#DeleteItemAttributeForm"),
+                    function (data) {
+                        var error = $(data).filter("#error");
+                        if (error.text() != "") {
+                            MessageBox(error.text());
+                        }
+                        else {
+                            $("#ItemAttributeContainer").html(data);
+                        }
+                    }
+                );
+
+                $(this).dialog("close");
+            };
+            btns['@Translation.Get("Ne")'] = function () {
+                $(this).dialog("close");
+            };
+            $("#ItemAttributeEditDialog").html("@Translation.Get("Jeste li sigurni da želite obrisati") '" + name + "'?");
+            $("#ItemAttributeEditDialog").dialog({
+                autoOpen: true,
+                title: '@Translation.Get("Brisanje")',
+                width: 'auto',
+                modal: true,
+                buttons: btns
+            });
+        }
+
+        function EditAttribute(action, obj) {
+            if (action == "edit") {
+                var id = $(obj).attr('id').replace('attrDef_', '');
+                $('#ItemAttributeEditViewIdInput').attr('value', id);
+            }
+            else
+                $('#ItemAttributeEditViewIdInput').attr('value', '');
+
+            AjaxSubmitForm($("#ItemAttributeEditViewForm"), function (data) { $("#ItemAttributeEditDialog").html(data); }, function () { OnItemAttributeEdit(); });
+        }
+
+        function OnItemAttributeEdit() {
+            var btns = {};
+            btns['@Translation.Get("Pošalji")'] = function () {
+                $('#AttributeDefinitionDataType').removeAttr('disabled');
+                $('#SystemListReferenceType').removeAttr('disabled');
+                AjaxSubmitForm($('#EditItemAttributeForm'), function (data) { $("#ItemAttributeContainer").html(data); });
+                $(this).dialog("close");
+            };
+            btns['@Translation.Get("Odustani")'] = function () {
+                $(this).dialog("close");
+            };
+            $("#ItemAttributeEditDialog").dialog({
+                autoOpen: true,
+                title: '@Translation.Get("Uređivanje")',
+                modal: true,
+                width: 'auto',
+                buttons: btns
+            });
+        }
+</script>
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"</div>")
+}

@@ -1,0 +1,192 @@
+﻿@using WebShop.Models;
+@using M = WebShop.Models;
+@using WebShop.Infrastructure;
+@using Syrilium.Modules.BusinessObjects;
+@model WebShop.Models.User
+
+@{
+    ViewBag.Title = M.Translation.Get("Editiranje profila");
+}
+
+@if (ViewBag.MyAccountMenu)
+{
+    <div>
+        @section MyAccountMenu
+        {
+            @Html.Partial("MyAccountMenu")
+        }
+    </div>
+}
+<div class="EditMyProfileWrapper">
+    <div class="EditMyProfile">
+        <div>
+            <h2>
+                @WebShop.Models.Translation.Get("Uređivanje profila")
+            </h2>
+        </div>
+        <div style="margin-bottom: 10px;">
+            @Html.Partial("MessageBox")
+        </div>
+        <div id="EditMyProfileForm" class="EditMyProfileForm">
+
+            @using (Html.BeginForm("EditMyProfile", "MyAccount"))
+            {
+
+            
+                 <div class="lc Label">
+                    @M.Translation.Get("Email")*
+                </div>
+                if (Model.DisplayEmailAlert)
+                {
+                <div class="rc">
+                    @Html.TextBox("Email", Model.Email, new { @class = "FormTextbox BorderAlert" })
+                    <img alt="" src="../../Resources/Images/QuestionMark.png" title="@ViewData["DisplayEmail"]" class="tTip" />
+                </div>
+                }
+                else
+                {
+                <div class="rc">
+                    @Html.TextBox("Email", Model.Email, new { @class = "FormTextbox" })
+                </div>
+                }
+                <div class="lc Label">
+                    @M.Translation.Get("Lozinka")*
+                </div>
+                
+                if (Model.DisplayPasswordAlert)
+                {
+                <div class="rc">
+                    @Html.Password("Password", Model.Password, new { @class = "Textbox FormTextbox BorderAlert" })
+                    <img alt="" src="../../Resources/Images/QuestionMark.png" title="@ViewData["DisplayPassword"]" class="tTip" />
+                </div>
+                }
+                else
+                {
+                <div class="rc">
+                    @Html.Password("Password", Model.Password, new { @class = "Textbox FormTextbox floatLeft" })
+                </div>
+                }
+               
+                <div class="lc Label">
+                    @M.Translation.Get("Ponovi lozinku")*
+                </div>
+               
+                if (Model.DisplayPasswordAlert)
+                {
+                <div class="rc">
+                    @Html.Password("PasswordConfirm", Model.PasswordConfirm, new { @class = "Textbox FormTextbox BorderAlert" })
+                    <img alt="" src="../../Resources/Images/QuestionMark.png" title="@ViewData["DisplayPassword"]"  class="tTip "/>
+                </div>
+                }
+                else
+                {
+                <div class="rc">
+                    @Html.Password("PasswordConfirm", Model.PasswordConfirm, new { @class = "Textbox FormTextbox" })
+                </div>
+                }
+               
+                    <div class="lc Label">
+                    @M.Translation.Get("Ime")*
+                </div>
+                if (Model.DisplayNameAlert)
+                {
+                <div class="rc">
+                    @Html.TextBox("Name", Model.Name, new { @class = "FormTextbox BorderAlert" })
+                    <img alt="" src="../../Resources/Images/QuestionMark.png" title="@ViewData["DisplayName"]" class="tTip" />
+                </div>
+                }
+                else
+                {
+                <div class="rc">
+                    @Html.TextBox("Name", Model.Name, new { @class = "FormTextbox" })
+                </div>
+                }
+                <br style="clear: left;" />
+                <div class="lc Label">
+                    @M.Translation.Get("Prezime")*
+                </div>
+                if (Model.DisplaySurnameAlert)
+                {
+                <div class="rc">
+                    @Html.TextBox("Surname", Model.Surname, new { @class = "FormTextbox BorderAlert" })
+                    <img alt="" src="../../Resources/Images/QuestionMark.png" title="@ViewData["DisplaySurname"]" class="tTip" />
+                </div>
+                }
+                else
+                {
+                <div class="rc">
+                    @Html.TextBox("Surname", Model.Surname, new { @class = "FormTextbox " })
+                </div>
+                }
+                
+               
+                <div class="lc Label">
+                    @M.Translation.Get("Spol")*
+                </div>
+                if (Model.DisplayGender)
+                {
+                <div class="rc">
+                    @Html.DropDownList("GenderId", WebShop.Models.User.GenderList(), "-- Odaberite spol --", new { @class = "DropDownList SexDropDownList BorderAlert" })
+                    <img alt="" src="../../Resources/Images/QuestionMark.png" title="@ViewData["DisplayGender"]"  class="tTip "/>
+                </div>
+                }
+                else
+                {
+                <div class="rc">
+                    @Html.DropDownList("GenderId", WebShop.Models.User.GenderList(), "-- Odaberite spol --", new { @class = "DropDownList SexDropDownList" })
+                </div>
+                }
+                <div class="lc Label">
+                    @M.Translation.Get("Datum rođenja")
+                </div>
+                if (Model.DisplayDateOfBirth)
+                {        
+                <div class="rc">
+                    @Html.TextBox("dateTime", Model.DateOfBirth==null?"":Model.DateOfBirth.Value.ToShortDateString(), new { @class = "FormTextbox BorderAlert", id = "datepicker" })
+                    <img alt="" src="../../Resources/Images/QuestionMark.png" title="@ViewData["DisplayDateOfBirth"]"  class="tTip "/>
+                </div>
+                }
+                else
+                {          
+                <div class="rc">
+                    @Html.TextBox("dateTime", Model.DateOfBirth==null?"":Model.DateOfBirth.Value.ToShortDateString(), new { @class = "FormTextbox", id = "datepicker" })
+
+                </div>
+                }
+                <div class="lc Label">
+                    @M.Translation.Get("Telefon")
+                </div>
+                <div class="rc">
+                    @Html.TextBox("Phone", Model.Phone, new { @class = "FormTextbox " })
+                </div>
+                <div class="lc Label">
+                    @M.Translation.Get("Grad")
+                </div>
+                <div class="rc">
+                    @Html.TextBox("City", Model.City, new { @class = "FormTextbox " })
+                </div>
+                <div class="lc Label">
+                    @M.Translation.Get("Adresa")
+                </div>
+                <div class="rc">
+                    @Html.TextBox("Address", Model.Address, new { @class = "FormTextbox " })
+                </div>
+                
+                <br style="clear: left;" />
+                <div class="" style="margin-top: 10px;">
+                    <div class="floatRight">
+                        <input type="hidden" name="button" value="submit" />
+                        <input type="submit" value="@M.Translation.Get("Snimi")" class="ButtonBlue roundedCornersMin floatRight"
+                            style="margin-right: 60px;" />
+                    </div>
+                </div>
+        
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.tTip').betterTooltip({ speed: 150, delay: 200 });
+    });
+</script>

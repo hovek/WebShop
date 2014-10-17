@@ -1,0 +1,19 @@
+﻿@using WebShop.Models
+@model ItemSort
+
+@{
+    Model.Init(Request);
+}
+
+@*<span>@Translation.Get("Sortiraj po")</span>:*@
+@Html.DropDownList("sort", Model.Items, new { onchange="javascript: OnSortChanged(this);" , @class="DropDownList ItemSortDropDownList" })
+
+<script type="text/javascript">
+    function OnSortChanged(value) {
+        var selectedSort = $(value).val();
+        var parts = selectedSort.split("_");
+        $("#SortInput").attr("name", parts[0] + "_sort");
+        $("#SortInput").attr("value", parts[1]);
+        $("#@Model.FormId").submit();
+    }
+</script>

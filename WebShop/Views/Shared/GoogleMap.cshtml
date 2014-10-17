@@ -1,0 +1,294 @@
+﻿@using System.Globalization
+@using WebShop.Models
+@model WebShop.Models.GoogleMap
+
+@if (!Model.HasCoordinates) { return; }
+
+@{
+    string mapCenterLat = Model.MapCenterLat == null ? Model.ImageMarkerLat.ToString(CultureInfo.InvariantCulture) : Model.MapCenterLat.Value.ToString(CultureInfo.InvariantCulture);
+    string mapCenterLng = Model.MapCenterLng == null ? Model.ImageMarkerLng.ToString(CultureInfo.InvariantCulture) : Model.MapCenterLng.Value.ToString(CultureInfo.InvariantCulture);
+    string mapMarkerLat = Model.ImageMarkerLat.ToString(CultureInfo.InvariantCulture);
+    string mapMarkerLng = Model.ImageMarkerLng.ToString(CultureInfo.InvariantCulture);
+    string mapZoom = Model.MapZoom == null ? Model.ImageZoom.ToString() : Model.MapZoom.Value.ToString();
+    string mapMaxWidth = Model.MapMaxWidth == null ? "$(window).width()" : Model.MapMaxWidth.ToString();
+    string mapMaxHeight = Model.MapMaxHeight == null ? "$(window).height()" : Model.MapMaxHeight.ToString();
+    string locationId = Model.LocationId == null ? "" : Model.LocationId.ToString();
+    string sensor = Model.Sensor ? "true" : "false";
+}
+
+<div>
+    <div class="ControlBoxMainHeader roundedCornersSmall">
+        <div class="MapIcon">
+            <span class="ControlBoxHeaderText">@Translation.Get("LOKACIJA")</span>
+        </div>
+    </div>
+    <div class="dividerBig">
+    </div>
+    <div class="">
+        <script type="text/javascript">
+            var allmarkers = [];
+            var mgr;
+            var map;
+            var icons = {};
+            var zoomLevelsUsed = [];
+            var mainMarkerId = -1;
+            var mainMarker;
+            var houseShadowIcon = '/Resources/Images/GoogleMapMarker.png';
+            var townIcon = '/Resources/Images/GoogleMapMarker.png';
+            var houseIcon = '/Resources/Images/GoogleMapMarker.png';
+
+            function addClickEvent(marker, content) 
+            {
+                var infowindow = new google.maps.InfoWindow({
+                    content: content,
+                    maxWidth: 200
+                });
+
+                google.maps.event.addListener(marker, 'click', function () {
+                    infowindow.open(map, marker);
+                });
+
+                return marker;
+            }
+
+            function addInfoWindowCloseEvent(marker)
+            {
+                google.maps.event.addListener(marker, 'infowindowclose', function () {
+                    marker.setImage(marker.getIcon().image);
+                });
+
+                return marker;
+            }
+
+            function createMarker(id, posn, title, icon, content) 
+            {
+                var marker = new google.maps.Marker({
+                    id: id,
+                    position: posn,
+                    //map: map, -> dodaje na mapu a to nije dobro, marker se treba dodati preko managera
+                    title: title,
+                    icon: icon,
+                    draggable: false
+                });
+
+                addClickEvent(marker, content);
+
+                addInfoWindowCloseEvent(marker);
+
+                return marker;
+            }
+
+            function googleMapsSetCenter()
+            {
+                map.setCenter(new google.maps.LatLng(@mapCenterLat, @mapCenterLng), @mapZoom);
+            }
+
+            function mapZoomChanged()
+            {
+                var mapZoom = map.getZoom();
+
+                // sprečava dodavanje markera za isti zoom
+                if (zoomLevelsUsed[mapZoom] != null)
+                    return;
+
+                //allmarkers.length = 0;
+                var markers = [];
+
+                for (var i = 0; i < mapLayer.length; i++) {
+                    var layer = mapLayer[i];
+
+                    if (layer == undefined) continue;
+
+                    var markers = [];
+
+                    for (var j = 0; j < layer["places"].length; j++) {
+
+                        if (layer["zoom"][0] > mapZoom || mapZoom > layer["zoom"][1]) continue;
+
+                        // sprečava dodavanje markera za isti zoom
+                        for (var k = layer["zoom"][0]; k <= layer["zoom"][1]; k++)
+                        {
+                            zoomLevelsUsed[k] = 1;
+                        }
+
+                        var place = layer["places"][j];
+
+                        if (place == undefined) continue;
+
+                        var id = place["id"];
+                        var icon = getIcon(place["icon"]);
+                        var title = place["name"];
+                        var content = place["content"];
+                        var posn = new google.maps.LatLng(place["posn"][0], place["posn"][1]);
+
+                        // ako već postoji nešto na toj lokaciji onda na dodaje, npr. svi objekti po defaultu imaju iste koordinate kao i mjesto
+                        if (markerExists(place["posn"][0], place["posn"][1]) && i == 2) {
+                            continue;
+                        }
+
+                        var marker = createMarker(id, posn, title, icon, content);
+                        if (id == mainMarkerId)
+                        {
+                            mainMarker = marker;
+                        }
+
+                        markers.push(marker);
+                        allmarkers.push(marker);
+                    }
+
+                    mgr.addMarkers(markers, layer["zoom"][0], layer["zoom"][1]);
+                }
+
+                mgr.refresh();
+
+                if (mainMarker != null)
+                {
+                    google.maps.event.trigger(mainMarker, 'click');
+                }
+            }
+
+
+            function getMarkersTopZoomLevel(locationId)
+            {
+                for (var i = 0; i < mapLayer.length; i++) {
+                    var layer = mapLayer[i];
+
+                    if (layer == undefined) continue;
+
+                    for (var j = 0; j < layer["places"].length; j++) {
+                        var place = layer["places"][j];
+
+                        if (place == undefined) continue;
+
+                        if (place["id"] == locationId)
+                        {
+                            return layer["zoom"][1];
+                        }
+                    }
+                }
+
+                return -1;
+            }
+
+            function getIcon(images) 
+            {
+                var icon = null;
+                if (images) {
+                    if (icons[images[0]]) {
+                        icon = icons[images[0]];
+                    }
+                    else {
+                        var size = iconData[images[0]];
+                        var icon = new google.maps.MarkerImage(window[images[0]],
+                        new google.maps.Size(size.width, size.height),
+                        new google.maps.Point(0, 0),   // origin    
+                        new google.maps.Point(0, 32) // anchor
+                    );
+                        size = iconData[images[1]];
+                        var shadow = new google.maps.MarkerImage(window[images[1]],
+                        new google.maps.Size(size.width, size.height)     
+                    );
+
+                        icon.shadow = shadow;
+
+                        icons[images[0]] = icon;
+                    }
+                }
+                return icon;
+            }
+
+
+            function cm_markerClicked(markerNum, zoomLevel)
+            {
+                if (markerNum == -1) return;
+
+                var marker = allmarkers[markerNum];
+
+                map.setCenter(marker.getPosition(), zoomLevel);
+
+                var infowindow = new google.maps.InfoWindow({
+                    position: marker.getPosition(),
+                    content: marker.content,
+                    maxWidth: 200
+                });
+
+                infowindow.open(map, marker);
+            }
+
+            function markerExists(lat, lng) 
+            {
+                for (var i = 0; i < allmarkers.length; i++) {
+                    var marker = allmarkers[i];
+                    if (marker.getPosition().lat() == lat && marker.getPosition().lng() == lng) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function initializeMap(locationId) {
+                mainMarkerId = locationId;
+
+                var markersTopZoomLevel = -1;
+
+                if (mainMarkerId != '' && window.mapLayer != undefined) // ako postoji id lokaciji i markeri su se učitali
+                {
+                    markersTopZoomLevel = getMarkersTopZoomLevel(mainMarkerId);
+                }
+
+                if (markersTopZoomLevel != -1)
+                {
+                    map = new google.maps.Map(document.getElementById('map_canvas'), {
+                        zoom: markersTopZoomLevel,
+                        mapTypeId: google.maps.MapTypeId.HYBRID
+                    });
+                }
+                else
+                {
+                    map = new google.maps.Map(document.getElementById('map_canvas'), {
+                        zoom: @Model.MapZoom == null ? @Model.ImageZoom.ToString() : @Model.MapZoom.Value.ToString(),
+                        mapTypeId: google.maps.MapTypeId.HYBRID
+                    });
+                }
+
+                googleMapsSetCenter();
+
+                var mgrOptions = {
+                    borderPadding: 50000,
+                    maxZoom: 18,
+                    trackMarkers: true
+                };
+
+                mgr = new MarkerManager(map, mgrOptions);
+                google.maps.event.addListener(mgr, 'loaded', function () {
+                    var latlng = new google.maps.LatLng(@mapMarkerLat, @mapMarkerLng);
+                    var marker = new google.maps.Marker({ position: latlng });
+                    mgr.addMarker(marker,0);
+                    mgr.refresh();
+                });
+            }
+
+            jQuery(function ($) {
+                // Load dialog on click
+                $('#simplemodal-basic-activator').click(function (e) {
+                    $('#map_canvas').css({width: Math.min($(window).width() * @Model.MapSizeFactor.ToString(CultureInfo.InvariantCulture) , @mapMaxWidth), height: Math.min($(window).height() * @Model.MapSizeFactor.ToString(CultureInfo.InvariantCulture), @mapMaxHeight)});
+
+            //ShowMap(45.34,33.34);
+            $('#map_canvas').modal({
+                minWidth: Math.min($(window).width() * @Model.MapSizeFactor.ToString(CultureInfo.InvariantCulture),  @mapMaxWidth),
+                        minHeight: Math.min($(window).height() * @Model.MapSizeFactor.ToString(CultureInfo.InvariantCulture), @mapMaxHeight),
+                        maxWidth: Math.min($(window).width() * @Model.MapSizeFactor.ToString(CultureInfo.InvariantCulture), @mapMaxWidth),
+                        maxHeight: Math.min($(window).height() * @Model.MapSizeFactor.ToString(CultureInfo.InvariantCulture), @mapMaxHeight),
+                        onShow: function (dialog) {initializeMap('@locationId'); $('#map_canvas').css({left:0});},
+                        onClose: function (dialog) {$('#map_canvas').css({left:-10000});$.modal.close(); /* must call this!*/}
+                    });
+
+            return false;
+        });
+    });
+        </script>
+        <div id="map_canvas" style="position: absolute; left: -10000px; width: 1px; height: 1px;">
+        </div>
+        <img alt='@Model.ImageTitle' class="roundedCornersSmall" id='simplemodal-basic-activator' style='border:1px solid #dddddd; width:@Model.ImageWidth.ToString() px; height:@Model.ImageHeight.ToString() px; cursor:pointer;' src='http://maps.google.com/maps/api/staticmap?center=@Model.ImageMarkerLat.ToString(CultureInfo.InvariantCulture),@Model.ImageMarkerLng.ToString(CultureInfo.InvariantCulture)&maptype=roadmap&zoom=@Model.ImageZoom.ToString()&markers=size:medium|color:red|@Model.ImageMarkerLat.ToString(CultureInfo.InvariantCulture),@Model.ImageMarkerLng.ToString(CultureInfo.InvariantCulture)&size=@Model.ImageWidth.ToString()@("x")@Model.ImageHeight.ToString()&sensor=@sensor' />
+    </div>
+</div>

@@ -1,0 +1,27 @@
+﻿@using Syrilium.Modules.BusinessObjects
+@using WebShop.BusinessObjectsInterface;
+@model WebShop.Models.Banner
+@{
+
+    Model.Request = Request;
+}
+<div class="RightColumnControl">
+    @if (!string.IsNullOrWhiteSpace(Model.BannerRightSide))
+    {
+        @MvcHtmlString.Create(Model.BannerRightSide)
+    }
+</div>
+
+@* <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"
+                            width="728" height="90" id="Object1" align="middle">
+                            <param name="allowScriptAccess" value="sameDomain" />
+                            <param name="allowFullScreen" value="false" />
+                            <param name="wmode" value="transparent" />
+                            <param name="movie" value="http://affhr.kolektiva.net/xml-kolektiva-b/300x250_red.swf?city=zagreb&feed=http://www.kolektiva.hr/zagreb/feeds/products/index/output/xml/type/main/include_city/zagreb/&clickTag=http%3A%2F%2Fwww.kolektiva.hr%2F%3Fa_aid%3DEPH_Jutarnji%26a_bid%3D8d81410c&utm_source=affiliate&utm_medium=banner&utm_content=boostdeals&utm_campaign=jutarnji.hr" />
+                            <param name="quality" value="high" />
+                            <param name="bgcolor" value="#ffffff" />
+                            <embed wmode="transparent" src="http://affhr.kolektiva.net/xml-kolektiva-b/300x250_red.swf?city=zagreb&feed=http://www.kolektiva.hr/zagreb/feeds/products/index/output/xml/type/main/include_city/zagreb/&clickTag=http%3A%2F%2Fwww.kolektiva.hr%2F%3Fa_aid%3DEPH_Jutarnji%26a_bid%3D8d81410c&utm_source=affiliate&utm_medium=banner&utm_content=boostdeals&utm_campaign=jutarnji.hr"
+                                quality="high" bgcolor="#ffffff" width="728" height="90" name="izdvojeno" align="middle"
+                                allowscriptaccess="sameDomain" allowfullscreen="false" type="application/x-shockwave-flash"
+                                pluginspage="http://www.macromedia.com/go/getflashplayer" />
+                        </object>*@

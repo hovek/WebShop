@@ -1,0 +1,246 @@
+﻿@using WebShop.Models
+@using WebShop.BusinessObjectsInterface.Item
+@model AttributeTemplateTreeView
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"<div id=""AttributeTemplateViewContainer"">")
+}
+
+@using (Html.BeginForm("AddTemplate", "Admin", FormMethod.Post, new { id = "AddTemplateForm" }))
+{
+    <input name="groupId" value="@Model.GroupId" type="hidden" />	
+}
+
+@using (Html.BeginForm("DeleteTemplate", "Admin", FormMethod.Post, new { id = "DeleteTemplateForm" }))
+{
+    <input name="groupId" value="@Model.GroupId" type="hidden" />	
+    <input id="DeleteTemplateIdInput" name="templateId" type="hidden" />	
+}
+
+@using (Html.BeginForm("DeleteTemplateElement", "Admin", FormMethod.Post, new { id = "DeleteTemplateElementForm" }))
+{
+    <input name="groupId" value="@Model.GroupId" type="hidden" />	
+    <input id="DeleteTemplateElementIdInput" name="templateElementId" type="hidden" />	
+}
+
+@using (Html.BeginForm("AttributeTemplateEdit", "Admin", FormMethod.Post, new { id = "AttributeTemplateEditForm" }))
+{
+    <input id="EditActionInput" name="Action" type="hidden" />	
+    <input name="TemplateId" value="@(Model.GetAttributeTemplate() == null ? "" : Model.GetAttributeTemplate().Id.ToString())" type="hidden" />	
+    <input id="EditTemplateElementIdInput" name="TemplateElementId" type="hidden" />	
+    <input name="GroupId" value="@Model.GroupId" type="hidden" />	
+}
+
+@using (Html.BeginForm("OrderAttributeTemplate", "Admin", FormMethod.Post, new { id = "OrderAttributeTemplateForm" }))
+{
+    <input id="OrderAttributeTemplateData" name="orderData" type="hidden" />	
+    <input name="templateId" value="@(Model.GetAttributeTemplate() == null ? "" : Model.GetAttributeTemplate().Id.ToString())" type="hidden" />	
+}
+
+
+<fieldset>
+    <legend>PREDLOŽAK</legend>
+    @if (Model.GetAttributeTemplate() != null)
+    {
+        <input type="button" value="@Translation.Get("Obriši predložak")" onclick="@Html.Raw(string.Concat("javascript:DeleteTemplate(", Model.GetAttributeTemplate().Id, ");"))"/>
+        <input type="button" value="@Translation.Get("Dodaj")" onclick="@Html.Raw(string.Concat("javascript:EditTemplate('add',$('#TemplateTreeView'));"))"/>
+        <div id="TemplateTreeView" class="group">
+            <ul class="filetree">
+                @generateGroups(Model.GetAttributeTemplate().GetSortedAttributesAndGroups())
+            </ul>
+        </div>
+    }
+    else
+    {
+         <input type="button" value="@Translation.Get("Dodaj predložak")" onclick="javascript: AddTemplate();"/>
+    }
+</fieldset>
+
+<script type="text/javascript">
+    $(function () {
+        $("#TemplateTreeView")
+            .bind("loaded.jstree", function (event, data) { jQuery.jstree._reference($("#TemplateTreeView")).open_all(-1, false); })
+            .bind("move_node.jstree", function (e, data) { OnNodeMove(e,data); })
+            .jstree({
+                "core" :{
+                    "animation": 100
+                },
+                "dnd" : {
+                    "copy_modifier" : false
+                },
+                "crrm": {
+                    "move": {
+                        "check_move": function (m) { return OnCheckMove(m); },
+                    } 
+                },
+                "themes": {
+                    "icons": false
+                },
+                "contextmenu" : {
+                    "items": {
+                        "create": null,
+                        "rename": null,
+                        "remove": null,
+                        "ccp": null,
+                        "edit": {
+                            "label": "@(Translation.Get("Uredi"))",
+                            "action": function (obj) { EditTemplate('edit', obj); }
+                        },
+                        "add": {
+                            "label": "@(Translation.Get("Dodaj"))",
+                            "action": function (obj) { EditTemplate('add', obj); },
+                        },
+                        "delete": {
+                            "label": "@(Translation.Get("Obriši"))",
+                            "action": function (obj) { DeleteTemplateElement(obj); },
+                        }
+                    }
+                },
+                "plugins": ["themes", "html_data", "crrm", "dnd", "ui", "contextmenu"]
+            });
+    });
+
+    function OnCheckMove(m){
+        return $(m.np).hasClass('group') && $(m.o).hasClass('AttributeTemplateTreeViewItem');
+    }
+
+    function OnNodeMove(e, data) {
+        var orderData = (data.rslt.cr == -1 ? -1 : $(data.rslt.cr).attr('id')) + ";" + data.rslt.cp + ";";
+        data.rslt.o.each(function (i) {
+            orderData = orderData + $(this).attr('id') + ",";
+        });
+        $('#OrderAttributeTemplateData').attr('value', orderData);
+        AjaxSubmitForm($('#OrderAttributeTemplateForm'));
+    }
+
+    function TemplateMouseOver(id) {
+        $("#EditTE" + id).show();
+    }
+
+    function TemplateMouseOut(id) {
+       $("#EditTE" + id).hide();
+    }
+
+    function AddTemplate() {
+        AjaxSubmitForm($("#AddTemplateForm"), function (data) { $("#AttributeTemplateViewContainer").html(data); });
+    }
+
+    function DeleteTemplate(id) {
+        var btns = {};
+        btns['@Translation.Get("Da")'] = function () {
+             $('#DeleteTemplateIdInput').attr('value', id);
+             AjaxSubmitForm($("#DeleteTemplateForm"), function (data) { $("#AttributeTemplateViewContainer").html(data); });
+             $(this).dialog("close");
+         };
+         btns['@Translation.Get("Ne")'] = function () {
+            $(this).dialog("close");
+        };
+        $("#TemplateDeleteDialog").html("@Translation.Get("Jeste li sigurni da želite obrisati predložak?")");
+        $("#TemplateDeleteDialog").dialog({
+            autoOpen: true,
+            title: '@Translation.Get("Brisanje")',
+            width: 'auto',
+            modal: true,
+	        buttons: btns
+        });
+    }
+
+    function DeleteTemplateElement(obj) {
+        var id = $(obj).attr('id');
+        var templateElementName = $(obj).find('a').first().text().trim();
+
+        var btns = {};
+        btns['@Translation.Get("Da")'] = function () {
+            $('#DeleteTemplateElementIdInput').attr('value', id);
+            AjaxSubmitForm($("#DeleteTemplateElementForm"), function (data) { $("#AttributeTemplateViewContainer").html(data); });
+		    $(this).dialog("close");
+		};
+		btns['@Translation.Get("Ne")'] = function () {
+	        $(this).dialog("close");
+	    };
+        $("#TemplateDeleteDialog").html("@Translation.Get("Jeste li sigurni da želite obrisati") '" + templateElementName + "'?");
+        $("#TemplateDeleteDialog").dialog({
+	        autoOpen: true,
+	        title: '@Translation.Get("Brisanje")',
+            width: 'auto',
+            modal: true,
+			buttons: btns
+		});
+    }
+
+    function EditTemplate(action, obj) {
+        if (action == 'add' && !$(obj).hasClass('group')) {
+            MessageBox('@Translation.Get("Na odabrani element nije moguće dodavati.")');
+            return;
+        }
+
+        var id = $(obj).attr('id');
+        $('#EditActionInput').attr('value', action);
+        $('#EditTemplateElementIdInput').attr('value', id);
+        AjaxSubmitForm($("#AttributeTemplateEditForm"), function (data) { $("#TemplateEditDialog").html(data); }, function () { OnAttributeTemplateEdit(); });
+    }
+
+    function OnAttributeTemplateEdit() {
+        var btns = {};
+        btns['@Translation.Get("Pošalji")'] = function () {
+            var inputs = $('#AttributeTemplateConstraintEditInputs').clone();
+            inputs.css('display','none');
+            inputs.appendTo('#EditAttributeTemplateAttributeForm');
+
+            var formToSubmit = $('#AttributeTemplateEditFormToSubmit').val();
+            if(formToSubmit)
+                AjaxSubmitForm($('#' + formToSubmit), function (data) { $("#AttributeTemplateViewContainer").html(data); });
+		    $(this).dialog("close");
+		};
+		btns['@Translation.Get("Odustani")'] = function () {
+    	        $(this).dialog("close");
+    	    };
+        $("#TemplateEditDialog").dialog({
+    	    autoOpen: true,
+    	    title: '@Translation.Get("Uređivanje")',
+			modal: true,
+            width: 'auto',
+			buttons: btns
+		});
+    }
+</script>
+
+@if (!Request.IsAjaxRequest())
+{ 
+    @Html.Raw(@"</div>")
+}
+
+@helper generateGroups(IList<dynamic> attributesAndGroups)
+{
+    foreach (dynamic templateElement in attributesAndGroups)
+    {
+        if (templateElement is IAttributeTemplateAttribute)
+        {
+            IAttributeTemplateAttribute attr = templateElement;
+             @Html.Raw(string.Concat(@"<li id=""",attr.Id, @""" class=""AttributeTemplateTreeViewItem"">"))
+            <a href="#" onclick="javascript: event.preventDefault();">
+                @{       
+                    string templateAttributeName = attr.Attribute.GetNameValue();   
+                    @(templateAttributeName)
+                }
+            </a>
+            @Html.Raw("</li>")
+        }
+        else if (templateElement is IAttributeTemplateAttributeGroup)
+        {
+            IAttributeTemplateAttributeGroup group = templateElement;
+            @Html.Raw(string.Concat(@"<li id=""",group.Id, @""" class=""group AttributeTemplateTreeViewItem"">"))
+            <a href="#" onclick="javascript: event.preventDefault();">
+                @{                    
+            string templateGroupName = group.GetAnyDisplayValue();
+                    @(templateGroupName)
+                }
+            </a>
+            <ul>
+                @generateGroups(group.GetSortedAttributesAndGroups())
+            </ul>
+            @Html.Raw("</li>")
+        }
+    }
+}

@@ -1,0 +1,110 @@
+﻿@using Models=WebShop.Models
+@using Syrilium.Modules.BusinessObjects
+@using WebShop.Infrastructure
+@model WebShop.Models.Translation
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("EditTranslation", "Admin", FormMethod.Post, new { id="EditTranslationForm" }))
+{
+    <input hidden="hidden" id="KeyLanguageInput" name="keyLanguage"/>
+    <input hidden="hidden" id="TextInput" name="text"/>
+}
+
+<div class=" BoxWrapper">
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+        <br style="clear:left;" />
+    }
+    <div class="floatLeft">
+        <div class="floatLeft" style="width:400px;">
+
+                @using (Html.BeginForm("Translation", "Admin", FormMethod.Get, new { enctype = "multipart/form-data" }))
+                { 
+                    <fieldset>
+                        <legend>@Models.Translation.Get("Pretraga")</legend><span class="label">@Models.Translation.Get("Jezik"): </span>
+                        @Html.DropDownList("languageId", Model.GetLanguages(), string.Concat("-- ",WebShop.Models.Translation.Get("jezik")," --"), new { @class = " DropDownList DropDownListSmall floatLeft" })
+                        <br style="clear:left;" />
+                        <span class="label">@Models.Translation.Get("Prijevod"):</span>
+                        @Html.TextBox("valueSearch", "", new { @class = "Textbox" })
+                        <br style="clear:left;" />
+                        <input type="submit" name="button" value="@Models.Translation.Get("Traži")" class="ButtonBlue roundedCornersMin" />
+                        <br style="clear:left;" />
+                    </fieldset> 
+                }
+   </div>
+        <div class="floatLeft TranslationGrid">
+
+        @{List<WebGridColumn> columns;}
+        @(new WebGrid(Model.GetSourceAndColumns(out columns)).GetHtml(columns:columns))
+
+        </div>
+    </div>
+    <br style="clear:left;" />
+</div>
+
+<script type="text/javascript">
+    // Declaring class "Timer"
+    var Timer = function () {
+        this.Interval = 1000;
+        this.Enable = new Boolean(false);
+        this.Tick;
+        var timerId = 0;
+        var thisObject;
+        this.Start = function () {
+            this.Enable = new Boolean(true);
+
+            thisObject = this;
+            if (thisObject.Enable) {
+                thisObject.timerId = setInterval(
+                function () {
+                    thisObject.Tick();
+                }, thisObject.Interval);
+            }
+        };
+        this.Stop = function () {
+            thisObject.Enable = new Boolean(false);
+            clearInterval(thisObject.timerId);
+        };
+    };
+
+    var activeTimers = {};
+
+    function OnTranslationChange(id) {
+        $('textarea#' + id).css('border-color', 'red');
+
+        var timer = activeTimers[id];
+        if (timer != null) {
+            timer.Stop();
+        }
+        else {
+            timer = new Timer();
+            activeTimers[id] = timer;
+            timer.Tick = function () {
+                this.Stop();
+                SubmitTranslation(id, $('textarea#' + id).val());
+            };
+        }
+        timer.Start();
+    }
+
+    function SubmitTranslation(id, text) {
+        var form = $('#EditTranslationForm').clone();
+        form.find('#KeyLanguageInput').attr('value', id);
+        form.find('#TextInput').attr('value', text.replace(/(\r\n|\n|\r)/gm, "\\r\\n"));
+        AjaxSubmitForm(
+            form,
+            function (){
+                $('textarea#' + id).css('border-color', '');
+        });
+    }
+
+    @CommonHelpers.GetAjaxSubmitFormJSF();
+</script>

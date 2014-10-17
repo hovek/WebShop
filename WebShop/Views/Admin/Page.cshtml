@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<div class="BoxWrapper">
+    @if (ViewData["Message"] != null)
+    {
+        <div class="MessageBox">
+            <span>
+                @ViewData["Message"]
+            </span>
+        </div>
+         <br style="clear:left;" />
+    }
+    @using (Html.BeginForm("Page", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "PageContentForm" }))
+    {
+        <div class="ControlWrapper floatLeft">
+            <span class="label">Jezik: </span>
+            @Html.DropDownList("languageId", (SelectList)ViewData["languageList"], "-- jezik -- ", new { @class = " DropDownList floatLeft" })
+            <br style="clear: left;" />
+            @if (ViewData["languageId"] != null)
+            {
+                <span class="label">Grupe stranica:</span>
+                @Html.DropDownList("pageLocationId", (SelectList)ViewData["pageLocationList"], "-- popis grupa stranica -- ", new { @class = " DropDownList floatLeft" })
+             
+                <br style="clear: left;" />
+            }
+            @if ((SelectList)ViewData["PageList"] != null)
+            {
+                <span class="label">Popis stranica:</span>
+                @Html.DropDownList("pageId", (SelectList)ViewData["PageList"], "-- popis stranica -- ", new { @class = " DropDownList floatLeft" })
+        
+      
+            }
+            <br style="clear: left;" />
+            <span class="label">Id stranice: </span>
+            @Html.TextBox("idPage", ViewData["pageId"], new { @class = "Textbox TextboxSmall", @readonly = true })
+            <br style="clear: left;" />
+            <span class="label">Defaultna stranica: </span>
+            <div style="padding-top: 5px;">
+                @Html.CheckBox("staticPage", ViewData["staticPage"])
+            </div>
+            <br style="clear: left;" />
+            <span class="label">Prikaži stranicu: </span>
+            <div style="padding-top: 5px;">
+                @Html.CheckBox("showPage", ViewData["showPage"])
+            </div>
+            <br style="clear: left;" />
+            <span class="label">Ime:</span>
+            @Html.TextBox("name", ViewData["name"], new { @class = "Textbox TextboxBig" })
+            <br style="clear: left;" />
+            <div class="ControlWrapper">
+                <span class="label">Sadržaj: </span>
+                @Html.TextArea("content", (string)ViewData["content"], new { @name = "EditorText" })
+            </div>
+        </div>
+        <br style="clear: left;" />
+        <div class="ButtonHolder">
+            <input type="submit" name="button" value="Save" class="ButtonBlue" />
+            <input type="submit" name="button" value="Delete" class="ButtonRed" />
+        </div>
+       
+         
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#content').ckeditor();
+    });
+
+
+    $(function () {
+        $('#pageLocationId option').click(function () {
+            $("#PageContentForm").submit();
+        });
+
+
+        $('#pageId option').click(function () {
+            $("#PageContentForm").submit();
+        });
+
+
+        $('#languageId option').click(function () {
+            $("#PageContentForm").submit();
+        });
+
+        $('#pageLocationId').change(function () {
+            $("#PageContentForm").submit();
+        });
+
+
+        $('#pageId').change(function () {
+            $("#PageContentForm").submit();
+        });
+
+
+        $('#languageId').change(function () {
+            $("#PageContentForm").submit();
+        });
+
+    });
+</script>

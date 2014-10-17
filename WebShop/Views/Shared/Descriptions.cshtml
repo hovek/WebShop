@@ -1,0 +1,71 @@
+﻿@using WebShop.Models;
+@using WebShop.BusinessObjectsInterface.Item
+@model Descriptions
+
+<div class="ControlBoxMainHeader roundedCornersSmall">
+    <div class="DescriptionIcon">
+        <span class="ControlBoxHeaderText">@Translation.Get("OPĆE INFORMACIJE O PREDMETU")</span>
+    </div>
+</div>
+<div class="ControlBoxMainContent ">
+    <div class="floatLeft DescriptionWrapper">
+        @if (Model.BasicInfo.Count > 0)
+        {
+            <div class="DescriptionGroup floatLeft">
+                <span class="TitleSmall"><b>@Translation.Get("OSNOVNE INFORMACIJE")</b></span>
+                <div class="dividerBig"></div>
+                       <div class="Descriptions">
+                    @foreach (KeyValuePair<IAttributeDefinition, string> item in Model.BasicInfo)
+                    {  
+                        @GenerateItem(item.Key, item.Value)
+                    }
+
+                </div>
+            </div>
+            <div class="dividerBig"></div>
+        }
+
+            @GenerateElements(Model.GetElements())
+   
+    </div>
+</div>
+
+@helper GenerateElements(IList<dynamic> templateElements)
+{
+    foreach (var element in templateElements)
+    {
+        if (element is IAttributeTemplateAttribute)
+        {
+            KeyValuePair<string, string> attrNameValue = Model.GetAttributeNameValue(element);
+            IAttributeTemplateAttribute attr = element;
+    @GenerateItem(attr.Attribute, attrNameValue.Value)
+        }
+        else
+        {
+    <div class="DescriptionGroup floatLeft">
+        <span class="TitleSmall"><b>@element.GetDisplayValue()</b></span>
+        <div class="dividerBig"></div>
+        <div class="Descriptions">
+            @GenerateElements(Model.GetElements(element))
+        </div>
+    </div>
+    <div class="dividerBig"></div>
+        }
+    }
+}
+
+@helper GenerateItem(IAttributeDefinition attrDef, dynamic value)
+{
+    <div class="@(Model.IsAttributeDescription(attrDef.Id) ? "DescriptionValueFullWidth" : "DescriptionItems")">
+        <span class="DescriptionName"><b>@attrDef.GetDisplayValue():</b> </span><span class="DescriptionValue">
+            @if (attrDef.DataType == AttributeDataTypeEnum.Bool)
+            {
+                <span class="@(value == "True" ? "DescriptionValueChackedTrue" : "DescriptionValueChackedFalse")"></span>
+            }
+            else
+            {
+                @Html.Raw(value)
+            }
+        </span>
+    </div>
+}

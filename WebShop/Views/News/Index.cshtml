@@ -1,0 +1,28 @@
+﻿@using Syrilium.Modules.BusinessObjects
+@using WebShop.BusinessObjects
+@using M = WebShop.Models
+@model News
+@{
+    ViewBag.Title = M.Translation.Get("Vijesti");
+}
+
+<div class="News">
+    <h1>
+        @Model.Title
+    </h1>
+    <span><b>Datum: @Model.Date.Value.ToShortDateString(), Autor: @Model.Autor</b> </span>
+    <br />
+    <br />
+    <p>
+        <b>
+            @Model.IntroductionText
+        </b>
+    </p>
+    <div class="floatLeft ImageNews">
+        <span class="floatLeft" style="background:url('@(Model.ImageUrl!=null?WebShop.Infrastructure.CommonHelpers.GetNewsImagePath("W250H200", Model.ImageUrl):"")') center center no-repeat; width:250px; height:200px;"></span>
+        <div class="AutorPicture">@Model.AutorPicture</div>
+    </div>
+    <p>
+        @MvcHtmlString.Create(@Model.Text)
+    </p>
+</div>

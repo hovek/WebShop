@@ -1,0 +1,157 @@
+﻿@using WebShop.BusinessObjectsInterface.Item
+@using WebShop.Models;
+@using M = WebShop.Models
+@using WebShop.Infrastructure
+
+@model Search
+
+@{
+    ViewBag.Title = M.Translation.Get("Rezultati pretrage");
+}
+
+@using (Html.BeginForm("CheckLogin", "MyAccount", FormMethod.Post, new { id = "CheckLoginForm" })) { }
+
+@Html.Partial("SearchBox", Model.SearchBox)
+
+@if (Model.SearchBox.Products.Count > 0)
+{
+    <div class="SearchItemsHeader roundedCornersSmall">
+        <div class="floatLeft" style="width: 480px;">
+            <div>
+                @Html.ActionLink(Translation.Get("Save"), "SearchInquiry", "Search", new { @class = "SearchInquiry floatLeft" })
+            </div>
+            <div>       @Html.Partial("Paging")</div>
+            <div style="float: right;">
+                @Html.Partial("ItemSort", Model.ItemSort)
+            </div>
+        </div>
+    </div>
+}
+<div class="SearchItems">
+    <div class="SearchItemsContainer ">
+        @if(Model.SearchBox.Products.Count > 0 )
+        {
+            foreach (IItem item in Model.SearchBox.Products)
+            {
+         
+                <div class="SearchItemWrapper floatLeft">
+                    <a class="moreDetails" href="@Url.Action("Index", "Subject", new { pid = item.Id })"><strong>@Translation.Get("DETALJNIJE")</strong></a>
+                    <div class="paddingBig floatLeft SearchItem ">
+                        <a  href="@Url.Action("Index", "Subject", new { pid = item.Id })">
+                            <h2 class="floatLeft Blue" style="margin: 0px; width: 320px;">@item.GetValueFormated(AttributeKeyEnum.Name)</h2>
+                        </a>
+                        <br style="clear: left;" />
+                        <h3>
+                            @*@item.DestinationPath*@</h3>
+                        <span class="ImageWrapper floatLeft">
+                            <a href="@Url.Action("Index", "Subject", new { pid = item.Id })">
+                                @{
+                                    var imageName = item.GetValueFormated(AttributeKeyEnum.Image);
+                                    if (string.IsNullOrEmpty(imageName))
+                                    {
+                                        imageName = WebShop.Module.I<WebShop.BusinessObjectsInterface.IConfig>().GetValue(WebShop.BusinessObjectsInterface.ConfigNames.DefaultProductImage);
+                                    }
+                                    <span class="roundedCornersSmall" style="display:block; background:url('@WebShop.Infrastructure.CommonHelpers.GetProductImagePath("W150H120", imageName)') center center no-repeat; width:150px; height:120px;"></span>
+                                }
+                                    </a>
+                        </span>
+                        <div class="SearchItemDescription">
+                            @{int count = 5;}
+                            <table>
+
+                                @foreach (var attribute in Model.SearchBox.GetFirstXAttributes())
+                                {
+                                    if (Model.SearchBox.AttributeHasValue(item, attribute))
+                                    {
+                                    <tr style="float: left; width: 100%; vertical-align: top;">
+                                        <td style="min-width: 100px;">
+                                            <span><b>@attribute.GetDisplayValue():</b></span>
+                                        </td>
+                                        <td>
+
+                                            @if (attribute.DataType == AttributeDataTypeEnum.Bool)
+                                            {
+                                                <span class="@(item.GetValueFormated(attribute.Id) == "True" ? "DescriptionValueChackedTrue" : "DescriptionValueChackedFalse")"></span>
+                                            }
+                                            else
+                                            {
+                                                <span>@Html.Raw(item.GetValueFormated(attribute.Id))</span>
+                                            }
+
+                                        </td>
+                                    </tr>
+                                            if (--count == 0) { break; }
+                                    }
+                                }
+
+                            </table>
+
+                        </div>
+                        <div class="RightBox ">
+                            <div class="SaveChekBoxWrapper">
+                                @Html.Partial("NewsletterCheck", new NewsletterCheck { ItemId = item.Id })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+              <div class="MessageBoxAlert roundedCornersMin paddingBig" style="margin:20px 0px;">
+                    <h3>
+                        @Translation.Get("Nema rezultatat pretrage!")
+                    </h3>
+                    <span>
+                        @Translation.Get("Trenutno nema oglasa koji zadovoljavaju postavljene kriterije pretrage.")
+                    </span>
+            </div>  
+        }
+    </div>
+</div>
+@if (Model.SearchBox.Products.Count > 0)
+{
+    <div class="SearchItemsHeader roundedCornersSmall">
+        <div class="floatLeft" style="width: 480px;">
+            <div>
+                @Html.ActionLink(Translation.Get("Save"), "SearchInquiry", "Search", new { @class = "SearchInquiry floatLeft" })
+            </div>
+            <div>       @Html.Partial("Paging")</div>
+            <div style="float: right;">
+                @Html.Partial("ItemSort", Model.ItemSort)
+            </div>
+        </div>
+    </div>
+}
+<div id="SearchInquiry" style="display: none; left: -10000px;">
+    @Html.Partial("SearchInquiry")
+</div>
+
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        // Log In
+        $('.SearchInquiry').click(function (e) {
+            AjaxSubmitForm($('#CheckLoginForm'),
+                function (data) {
+                    var d = "<div>" + data + "</div>";
+                    if ($(d).find("div[id='LoginDiv']").length) {
+                        $('#Login').html(data);
+                    }
+                    else {
+                        $('#SearchInquiry').modal({
+                            onClose: function (dialog) { $('#SearchInquiry').css({}); $.modal.close(); }
+                        });
+                    }
+                }
+            );
+
+            return false;
+        });
+    });
+
+    function OnPageClick(page) {
+        $('#PageInput').attr('value', page);
+        $('#SearchBtn').click();
+    }
+</script>

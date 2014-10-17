@@ -1,0 +1,71 @@
+﻿@using WebShop.Models;
+@using S = Syrilium.Modules.BusinessObjects;
+@model WebShop.Models.Item
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
+}
+<div class="BoxWrapper">
+    <div style="float:left; width:1200px;">
+        <div id="GroupEditDialog" style="display: none;">
+        </div>
+        <div id="GroupDeleteDialog" style="display: none;">
+        </div>
+        <div id="TemplateDeleteDialog" style="display: none;">
+        </div>
+        <div id="TemplateEditDialog" style="display: none;">
+        </div>
+        <div id="ItemAttributeEditDialog" style="display: none;">
+        </div>
+
+
+        <div class="floatLeft" style="margin-right: 10px;">
+            @Html.Partial("GroupTreeView", (object)Model.GroupTreeViewModel)
+        </div>
+
+        <div class="floatLeft">
+            <fieldset style="min-height: 410px;">
+                <legend>PREDMETI</legend>
+                <div>
+                    @if (Model.GroupId != null)
+                    {
+                        using (Html.BeginForm("Product", "Admin", FormMethod.Get, new { id = "AddProductForm" }))
+                        {
+                        <input type="hidden" name="gid" value="@Model.GroupId" />
+                        <input type="submit" id="AddProductID" class="" value="@Translation.Get("Dodaj novi predmet")"/>
+                        }
+                    }
+
+                </div>
+                <div style="margin-top: 10px;">
+                    @Html.Partial("ProductAdminListView", (object)Model.ProductAdminListViewModel)
+                </div>
+            </fieldset>
+
+        </div>
+    </div>
+    <br style="clear: left;" />
+
+    @if (Model.GroupId != null)
+    {
+        @Html.Partial("AttributeTemplateTreeView", (object)Model.AttributeTemplateTreeViewModel)
+    }
+
+    @Html.Partial("ItemAttribute", (object)Model.ItemAttributeModel)
+
+    <br style="clear: left;" />
+</div>
+<script type="text/javascript">
+    function MessageBox(message, title) {
+        var btns = {};
+        btns['@Translation.Get("U redu")'] = function () {
+            $(this).dialog("close");
+        };
+        $('<div>' + message + '</div>').dialog({
+            autoOpen: true,
+            title: title ? title : '@Translation.Get("Obavijest")',
+            modal: true,
+            width: 'auto',
+            buttons: btns
+        });
+    }
+</script>

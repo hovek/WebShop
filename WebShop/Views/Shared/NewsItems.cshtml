@@ -1,0 +1,22 @@
+﻿@using Syrilium.Modules.BusinessObjects;
+@using WebShop.Infrastructure;
+@using M = WebShop.Models
+<div class="paddingSmall">
+<h2>
+    @M.Translation.Get("Vijesti")</h2>
+@foreach (News item in News.GetAllVisibleNews())
+{
+    <ul class="SquareList">
+        <li><b>
+            @Html.ActionLink(@item.Title + @Html.Raw(" (") + @item.Date.Value.ToShortDateString() + @Html.Raw(")"), "Index", "News", new { NewsId = item.Id }, null)
+        </b>
+            <br />
+            <div class="marginSmall"></div>
+            <span>
+                @item.IntroductionText
+            </span></li>
+    </ul>
+    <div class="dividerBig">
+    </div>
+}
+</div>

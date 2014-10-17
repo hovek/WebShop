@@ -1,0 +1,9 @@
+/* IE 6 hacks */
+#simplemodal-container a.modalCloseImg 
+{
+	[if lt IE 7] background: none; 
+	[if lt IE 7] right: -14px; 
+	[if lt IE 7] width: 22px; 
+	[if lt IE 7] height: 26px; 
+	[if lt IE 7] filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='(/Scripts/Simplemodal_overlay/x.png)',sizingMethod='scale');
+}

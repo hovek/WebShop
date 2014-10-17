@@ -1,0 +1,21 @@
+﻿@using Syrilium.Modules.BusinessObjects;
+@using M = WebShop.Models
+<div style="border:7px solid #dedede;">
+<div class="paddingBig">
+    <h2>
+        @M.Translation.Get("Pronađi predmet u svojoj županiji")</h2>
+</div>
+<div>
+    <ul id="staticMap">
+        @foreach (County county in WebShopDb.I.County)
+        { 
+            <li class="@county.NameShort" id="@county.Id" title="@county.Name"><a  href="@Url.Action("Search", "Home", new { countyId = @county.Id })" onclick = "closePopUp">@county.Name</a></li>
+        }
+    </ul>
+</div>
+</div>
+<script type="text/javascript">
+    function closePopUp() {
+            $.modal.close();
+    }
+</script>

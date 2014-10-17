@@ -1,0 +1,49 @@
+﻿<ul class="sf-menu MenuTop">
+    <li class="layer1"><a href="@Url.Action("Item", "Admin")"><span>Predmeti</span>
+    </a>
+    </li>
+
+    <li class="layer1"><a href="@Url.Action("Newsletter", "Admin")" ><span>Newsletter</span>
+    </a>
+        <ul class="sf-navbar">
+            <li class="layer2"><a href="@Url.Action("NewsletterList", "Admin")" ><span>Newsletter liste</span>
+            </a></li>
+        </ul>
+    </li>
+    <li class="layer1"><a href="@Url.Action("Partner", "Admin")" ><span>Partneri</span>
+    </a>
+    </li>
+    <li class="layer1"><a href="@Url.Action("Banner", "Admin")"><span>Banneri</span>
+    </a>
+    </li>
+    <li class="layer1"><a href="@Url.Action("News", "Admin")" ><span>Vijesti</span>
+    </a>
+    </li>
+    <li class="layer1"><a href="@Url.Action("Page", "Admin")" ><span>Stranice</span>
+    </a>
+    </li>
+    <li class="layer1"><a href="@Url.Action("Cache", "Admin")" ><span>Cache</span>
+    </a>
+    </li>
+    <li class="layer1"><a href="@Url.Action("Translation", "Admin")" ><span>Prijevodi</span>
+    </a>
+
+    </li>
+
+</ul>
+
+<script type="text/javascript">
+    // initialise plugins
+    jQuery(function () {
+        jQuery('ul.sf-menu').superfish({
+            delay: 800,                            // one second delay on mouseout 
+            animation: { opacity: 'show', height: 'show' },  // fade-in and slide-down animation 
+            speed: 'fast',
+        });
+    });
+    $(document).ready(function () {
+        $(".sf-navbar").css("visibility", "visible");
+
+    }
+    );
+</script>

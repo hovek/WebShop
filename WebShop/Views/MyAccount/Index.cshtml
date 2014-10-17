@@ -1,0 +1,126 @@
+﻿@using WebShop.Models
+@using M = WebShop.Models
+@using WebShop
+@using Syrilium.Modules.BusinessObjects
+@model WebShop.Models.MyAccount
+@{
+    ViewBag.Title = M.Translation.Get("Moj račun");
+}
+@if (ViewBag.MyAccountMenu)
+{
+    <div>
+        @section MyAccountMenu
+        {
+            @Html.Partial("MyAccountMenu")
+        }
+    </div>
+}
+<h2>
+    @M.Translation.Get("Moj profil")</h2>
+@if (SessionState.I.Login != null && Model != null)
+{
+    if (Model.user != null)
+    { 
+    <div class="MyProfile floatLeft" >
+        <div class="LeftSide">
+            @if (Model.user.GenderId == 1 || Model.user.GenderId == null)
+            {
+                <img src="../../Resources/Images/MaleImage.png" alt="" class="roundedCornersSmall profilePicture" />
+            }
+            else
+            {
+                <img src="../../Resources/Images/FemaleImage.png" alt="" class="roundedCornersSmall profilePicture" />
+            }
+        </div>
+        <div class="RightSide">
+            <div class="TitleSmall">
+                <b>@Html.Raw(Model.user.Name.ToString() + " " + Model.user.Surname.ToString())</b></div>
+            <br style="clear:left;" />
+            <div class="lc">
+                <b> @M.Translation.Get("Datum rođenja"):</b>
+            </div>
+            <div class="rc">@Html.Raw(Model.user.DateOfBirth==null?"": Model.user.DateOfBirth.Value.ToString("dd.MM.yyyy"))</div>
+            <div class="lc">
+                <b>@M.Translation.Get("Email"):</b>
+            </div>
+            <div class="rc">@Html.Raw(Model.user.Email.ToString())</div>
+            <div class="lc">
+                <b>@M.Translation.Get("Adresa"):</b>
+            </div>
+            @if (Model.user.Address != null)
+            {
+                <div class="rc">@Html.Raw(Model.user.Address.ToString())</div>
+            }
+            <div class="lc">
+                <b>@M.Translation.Get("Grad"):</b>
+            </div>
+            @if (Model.user.City != null)
+            {
+               
+                <div class="rc">@Html.Raw(Model.user.City.ToString())</div>
+            }
+            <div class="lc">
+                <b>@M.Translation.Get("Telefon"):</b>
+            </div>
+            @if (Model.user.Phone != null)
+            {
+             
+                <div class="rc">
+                    @Html.Raw(Model.user.Phone.ToString())</div>
+            }
+        </div>
+    </div>
+    }
+    else
+    {
+        if (Model.partner.Name != null)
+        {
+    @Html.Raw(Model.partner.Name.ToString())
+        }
+        if (Model.partner.Address != null)
+        {
+    @Html.Raw(Model.partner.Address.ToString())
+        }
+        if (Model.partner.City != null)
+        {
+    @Html.Raw(Model.partner.City.ToString())
+        }
+        if (Model.partner.Email != null)
+        {
+    @Html.Raw(Model.partner.Email.ToString())
+        }
+        if (Model.partner.Fax != null)
+        {
+    @Html.Raw(Model.partner.Fax.ToString())
+        }
+        if (Model.partner.Phone != null)
+        {
+    @Html.Raw(Model.partner.Phone.ToString())
+        }
+        if (Model.partner.PostalCode != null)
+        {
+    @Html.Raw(Model.partner.PostalCode.ToString())
+        }
+        if (Model.partner.URL != null)
+        {
+    @Html.Raw(Model.partner.URL.ToString())
+        }
+        if (Model.partner.Services != null)
+        {
+    @Html.Raw(Model.partner.Services.ToString())
+        }
+        if (Model.partner.About != null)
+        {
+    @Html.Raw(Model.partner.About.ToString())
+        }
+        if (Model.partner.WorkDescription != null)
+        {
+    @Html.Raw(Model.partner.WorkDescription.ToString())
+        }
+    }
+
+}
+<br style="clear:left;" />
+<div class="floatLeft">
+    <a class="Button1" href="@Url.Action("EditMyProfile", "MyAccount")" ><strong>@M.Translation.Get("UREDI PROFIL")</strong></a>
+</div>

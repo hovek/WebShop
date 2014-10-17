@@ -1,0 +1,25 @@
+﻿@using Syrilium.Modules.BusinessObjects;
+@using WebShop.Infrastructure;
+@using M = WebShop.Models
+<div class="RightColumnControl">
+    <div class="ControlBoxWrapper floatLeft roundedCornersSmallTop" style="width: 225px;">
+        <div class="ControlBoxRightHeader">
+            <a href="@Url.Action("NewsItems", "News")" class=""><span class="NewsIcon"><span
+                class="ControlBoxHeaderText" style="color: #fff;"> @M.Translation.Get("VIJESTI") <span class="More floatRight"></span></span></span></a>
+        </div>
+        <div class="ControlBoxContent">
+            <div class="paddingBig">
+                <ul class="SquareList">
+                    @foreach (News item in News.GetTop5VisibleNews())
+                    {
+                        <li>
+                            @Html.ActionLink(@item.Title, "Index", "News", new { NewsId = item.Id }, null)
+                        </li>
+
+                    }
+                </ul>
+                @Html.ActionLink(M.Translation.Get("Sve vijesti"), "NewsItems", "News")
+            </div>
+        </div>
+    </div>
+</div>

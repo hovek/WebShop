@@ -1,0 +1,12 @@
+﻿@model WebShop.Models.Instruction
+
+@{
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";  
+}
+
+@using (Html.BeginForm("Instruction","Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken();
+    <input type="password" name="command" />
+    <label>@Model.Result</label>
+}
